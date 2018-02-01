@@ -12,7 +12,11 @@ class Controller{
     }
 
     function run($params = array()){
-        echo $this->blade->run(get_class($this),$params);
+        $this->render(get_class($this),$params);
+    }
+
+    function render($view, $params = array()){
+        echo $this->blade->run($view,$params);
     }
 
 }
