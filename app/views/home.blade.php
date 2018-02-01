@@ -1,5 +1,9 @@
 @extends('default.master')
 
 @section('content')
-<h1>{{$usuario->email}}</h1>
+    <section>
+        <div class="container">
+            <h1>{{$usuario->email}}</h1>
+        </div>
+    </section>
 @stop

@@ -1,1 +1,5 @@
-<header>Cabeçalho</header>
+<header>
+    <div class="container">
+        Cabeçalho
+    </div>
+</header>

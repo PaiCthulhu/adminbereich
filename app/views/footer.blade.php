@@ -1,1 +1,5 @@
-<footer>Rodapé</footer>
+<footer>
+    <div class="container">
+        Rodapé
+    </div>
+</footer>
