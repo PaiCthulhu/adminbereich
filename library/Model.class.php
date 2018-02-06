@@ -8,6 +8,11 @@ class Model{
     }
 
     function getSingle($id){
-        return $this->db->selectSingle($this->_table, $id)[0];
+        return $this->db->selectSingle($this->_table, $id);
+    }
+
+
+    function find($params){
+        return $this->db->selectSingleByFields($this->_table, $params);
     }
 }

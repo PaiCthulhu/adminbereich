@@ -15,7 +15,7 @@ function setReporting(){
 }
 
 /**
- * Função para despejar variáveis
+ * Função para despuração de variáveis
  * @param mixed $var
  */
 function dump($var){

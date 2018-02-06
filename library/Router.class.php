@@ -6,6 +6,7 @@ class Router{
      * @param string $url
      */
     function route($url){
+        $url = trim($url, '/\\');
         if(isset($this->routes[$url])){
             $params = explode('/', $this->routes[$url]);
             if(class_exists($params[0])){
@@ -18,6 +19,7 @@ class Router{
         else{
             echo "Rota não existente";
             dump($url);
+            dump($_SERVER);
         }
     }
 
@@ -29,5 +31,10 @@ class Router{
         if(is_string($action)){
             $this->routes[$route] = $action;
         }
+    }
+
+    static function redirect($path){
+        header("Location: ".PATH.DS.$path);
+        die();
     }
 }

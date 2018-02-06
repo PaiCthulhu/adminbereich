@@ -90,7 +90,33 @@ class DB {
         $q = $this->handle->prepare($query);
         $q->bindParam(':id', $id, PDO::PARAM_INT);
         $q->execute();
-        return $q->fetchAll($mode);
+        return $q->fetchAll($mode)[0];
+    }
+
+
+    /**
+     * @param $table
+     * @param $params
+     * @param int $mode
+     * @return stdClass|bool
+     */
+    function selectSingleByFields($table, $params, $mode = PDO::FETCH_OBJ){
+        $whereand = 'WHERE';
+        $params = $this->sanitize($params);
+        list($key, $val) = DB::keyValSplit($params);
+        $query = "SELECT * FROM `{$table}`";
+        foreach ($key as $i=>$v){
+            $col = trim($key[$i], "'");
+            $query .= " {$whereand} `{$table}`.`{$col}` = {$val[$i]}";
+            if($whereand == 'WHERE')
+                $whereand = 'AND';
+        }
+        $query .= " LIMIT 1";
+        $q = $this->fetch($query);
+        if(is_array($q))
+            return $q[0];
+        else
+            return $q;
     }
 
     /**
@@ -129,5 +155,13 @@ class DB {
             echo "{$msg}: ({$errorInfo->getCode()}) {$errorInfo->getMessage()}";
         }
         return false;
+    }
+
+    /**
+     * @param $array
+     * @return array
+     */
+    static function keyValSplit($array){
+        return [array_keys($array), array_values($array)];
     }
 }
