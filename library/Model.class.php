@@ -7,6 +7,10 @@ class Model{
         $this->_table = strtolower(get_class($this));
     }
 
+    function all(){
+        return $this->db->selectAll($this->_table);
+    }
+
     function getSingle($id){
         return $this->db->selectSingle($this->_table, $id);
     }

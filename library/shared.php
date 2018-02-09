@@ -4,11 +4,11 @@ date_default_timezone_set('America/Sao_Paulo');
 function setReporting(){
     if(DEBUG == true){
         error_reporting(E_ALL);
-        ini_set('display_errors','On');
+        ini_set('display_errors',"on");
     }
     else{
         error_reporting(E_ALL);
-        ini_set('display_errors','Off');
+        ini_set('display_errors',"off");
         ini_set('log_errors','On');
         ini_set('error_log',ROOT.DS.'tmp'.DS.'logs'.DS.'error.log');
     }
@@ -21,6 +21,7 @@ function setReporting(){
 function dump($var){
     if(class_exists('Kint')){
         Kint::$aliases[] = 'dump';
+        Kint::$aliases[] = 'exception_handler';
         Kint::dump($var);
     }
     else
@@ -48,6 +49,13 @@ function __autoload($class) {
         throw new Exception('Classe "'.$class.'" não encontrada!');
     }
 }
+
+function exception_handler($exception) {
+    echo "Erro: " , $exception->getMessage(), "\n";
+    dump($exception);
+}
+
+set_exception_handler('exception_handler');
 
 /**------------------------------------------------------------------------------------------------------------------**/
 

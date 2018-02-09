@@ -80,6 +80,11 @@ class DB {
         }
     }
 
+    function selectAll($table, $mode = PDO::FETCH_OBJ){
+        $query = "SELECT * FROM `{$table}`";
+        return $this->fetch($query, $mode);
+    }
+
     function selectSingle($table, $id, $mode = PDO::FETCH_OBJ){
         $k = $this->handle->query("SHOW KEYS FROM {$table} WHERE Key_name = 'PRIMARY'");
         if($k === false){
@@ -112,7 +117,7 @@ class DB {
                 $whereand = 'AND';
         }
         $query .= " LIMIT 1";
-        $q = $this->fetch($query);
+        $q = $this->fetch($query, $mode);
         if(is_array($q))
             return $q[0];
         else

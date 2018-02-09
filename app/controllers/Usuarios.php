@@ -1,5 +1,16 @@
 <?php
-class Usuarios {
+class Usuarios extends Controller {
+
+    function index(){
+        $usuarios = new Usuario();
+        $usuarios = $usuarios->all();
+        parent::render('admin.pages.usuarios.read',['usuarios'=>$usuarios]);
+    }
+
+    function add(){
+        parent::render('admin.pages.usuarios.add');
+    }
+
     static function login($user, $pswd){
         $usuarios = new Usuario();
         $usuario = $usuarios->find(['username'=>$user]);

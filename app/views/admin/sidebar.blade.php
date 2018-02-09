@@ -1,1 +1,0 @@
-Sidebar {{$_page}}

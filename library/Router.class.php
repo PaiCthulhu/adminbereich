@@ -7,17 +7,34 @@ class Router{
      */
     function route($url){
         $url = trim($url, '/\\');
-        if(isset($this->routes[$url])){
+        if(isset($this->routes[$url]))
             $params = explode('/', $this->routes[$url]);
-            if(class_exists($params[0])){
-                if(method_exists($params[0], $params[1])){
-                    $o = new $params[0]();
+        else{
+            $params = explode('/', $url);
+            if($params[0] == 'admin')
+                array_shift($params);
+        }
+
+        if(class_exists($params[0])){
+            if(!isset($params[1]) || $params[1] == '')
+                $params[1] = 'index';
+            if(method_exists($params[0], $params[1])){
+                $o = new $params[0]();
+                if(isset($params[2]))
+                    $o->{$params[1]}($params[2]);
+                else
                     $o->{$params[1]}();
-                }
+            }
+            else{
+                echo "Rota não existente: Método '{$params[1]}' não encontrado";
+                dump($url);
+                dump($_SERVER);
             }
         }
         else{
-            echo "Rota não existente";
+
+
+            echo "Rota não existente: Classe '{$params[1]}' não encontrada";
             dump($url);
             dump($_SERVER);
         }

@@ -7,7 +7,9 @@ O nome **AdminBereich** veio de meu interesse pelo idioma alemão
 e significa "Área Administrativa". No momento, serve de *placeholder* 
 para um nome final.
 
-Tecnologias implementadas:
+Bibliotecas/Tecnologias implementadas:
 * Blade Templates, implementado através de BladeOne
+* FontAwesome, como conjunto de ícones
+* JQuery, para manipulação de DOM, animações e requisições AJAX
 * Kint, para depuração de variáveis
 * Twitter Bootstrap 4.0 via CDN para diagramação do layout 

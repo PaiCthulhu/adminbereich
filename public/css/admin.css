@@ -8,8 +8,9 @@ html{
     bottom: 0;
 }
 
-body{
+body, html>body{
     min-height: 100%;
+    background-color: #f0f1fa;
 }
 
 .container.full-size, .row.full-size{
@@ -17,7 +18,76 @@ body{
     height: 100%;
 }
 
+section.main{
+    position: absolute;
+    left: 290px;
+    right: 30px;
+    top: 94px;
+    bottom: 30px;
+}
+
+section.main .card{
+    padding: 20px;
+    display: inline-block;
+}
+section.main .card.full{
+    display: block;
+}
+section.main .card>.card-header{
+    padding: 0 15px 0 15px;
+    margin: -5px -15px 0 -15px;
+    background-color: white;
+}
+section.main .card>.card-header>.card-title{
+    display: inline-block;
+    margin-bottom: 15px;
+}
+
+/** -- Header -- **/
+header#topbar{
+    height: 64px;
+    background-color: white;
+}
+#topbar .sidebar-header{
+    width: 260px;
+    height: 64px;
+    background-color: #f96868;
+    position: absolute;
+}
+
+/** -- Sidebar -- **/
+aside#sidebar{
+    position: fixed;
+    top: 64px;
+    bottom: 0;
+    width: 260px;
+
+    background-color: #3f4a59;
+    color: #fff;
+}
+#sidebar>nav>ul{
+    padding: 0;
+    list-style: none;
+}
+#sidebar a { color: white; }
+#sidebar hr{ border-color: white;}
+a.menu-opt{
+    display: block;
+    height: 56px;
+    padding: 0 12px;
+    line-height: 56px;
+}
+#sidebar a.menu-opt:hover{
+    background-color: rgba(0,0,0,0.1);
+    text-decoration: none;
+    transition: 0.2s linear;
+}
+#sidebar a.menu-opt.active{
+    color: #f96868;
+    background-color: rgba(0,0,0,0.1);
+}
+
 /** -- Seções -- **/
 section#login{
-    height: 95vh;
+    height: 92.5vh;
 }
