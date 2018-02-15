@@ -2,32 +2,29 @@
 class Usuarios extends Controller {
 
     function index(){
+        if (!Auth::hasPerm('users_view'))
+            Router::redirect('admin/');
         $usuarios = new Usuario();
         $usuarios = $usuarios->all();
         parent::render('admin.pages.usuarios.read',['usuarios'=>$usuarios]);
     }
 
     function add(){
+        if (!Auth::hasPerm('users_add'))
+            Router::redirect('admin/');
         parent::render('admin.pages.usuarios.add');
     }
 
-    static function login($user, $pswd){
+    function edit($id){
+        if (!Auth::hasPerm('users_edit'))
+            Router::redirect('admin/');
         $usuarios = new Usuario();
-        $usuario = $usuarios->find(['username'=>$user]);
-        if($usuario === false)
-            return $usuario;
-        if(password_verify($pswd, $usuario->senha)){
-            Session::set('mail', $usuario->email);
-            Session::set('pswd', $pswd);
-            Session::set('nome', $usuario->nome);
-            Session::set('user', $usuario->username);
-            Session::set('id', $usuario->id_usuario);
-            return true;
-        }
-        else{
-            Session::destroy();
-            return false;
-        }
-
+        $usuario = $usuarios->get($id);
+        if(!$usuario)
+            throw new Exception("O usuário id #{$id} não existe ou não foi encontrado");
+        else
+            parent::render('admin.pages.usuarios.edit', ['usuario'=>$usuario]);
     }
+
+
 }

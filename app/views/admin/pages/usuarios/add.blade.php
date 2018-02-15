@@ -4,7 +4,7 @@
     <section class="main">
         <div class="card full">
             <div class="card-header">
-                <h5 class="card-title">Adicionar Usuário</h5>
+                <h5 class="card-title">@include('default.icon',['i'=>'user-plus','t'=>'s']) &nbsp;Adicionar Usuário</h5>
                 <a href="{{PATH.DS.'admin'.DS.'usuarios'}}" class="float-right"><< Voltar</a>
             </div>
             <div class="card-body">

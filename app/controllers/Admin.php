@@ -9,7 +9,7 @@ class Admin extends Controller {
         ['title'=>'Emails', 'page'=>'admin.pages.mails','path'=>'admin','icon'=>'envelope','icon_type'=>'r'],
         ['title'=>'Opções', 'type'=>'cat'],
         ['title'=>'Usuários', 'page'=>'admin.pages.usuarios.*','path'=>'admin/usuarios','icon'=>'users','icon_type'=>'s'],
-        ['title'=>'Configurações', 'page'=>'admin.pages.configs.read','path'=>'admin','icon'=>'cogs','icon_type'=>'s']
+        ['title'=>'Configurações', 'page'=>'admin.pages.configs.read','path'=>'admin/configs','icon'=>'cogs','icon_type'=>'s']
     ];
 
     function login($params = array()){
@@ -22,7 +22,7 @@ class Admin extends Controller {
     }
 
     function logar(){
-        if(Usuarios::login($_POST['user'], $_POST['pswd'])){
+        if(Auth::login($_POST['user'], $_POST['pswd'], 'Usuario')){
             $this->index();
         }
         else{
@@ -32,7 +32,7 @@ class Admin extends Controller {
     }
 
     function sair(){
-        Session::destroy();
+        Auth::logout();
         Router::redirect('admin/');
     }
 

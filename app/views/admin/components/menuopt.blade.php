@@ -1,6 +1,6 @@
 @if (isset($option['type']) && $option['type'] == 'cat')
-    <li>
-        <hr/>
+    <li style="padding-right: 12px;">
+        <div class="menu-cat" data-title="{{$option['title']}}"></div>
     </li>
 @else
     <li>

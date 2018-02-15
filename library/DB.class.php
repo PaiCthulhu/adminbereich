@@ -95,6 +95,8 @@ class DB {
         $q = $this->handle->prepare($query);
         $q->bindParam(':id', $id, PDO::PARAM_INT);
         $q->execute();
+        if($q->rowCount() == 0)
+            return false;
         return $q->fetchAll($mode)[0];
     }
 

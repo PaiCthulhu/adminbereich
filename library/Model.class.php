@@ -11,7 +11,7 @@ class Model{
         return $this->db->selectAll($this->_table);
     }
 
-    function getSingle($id){
+    function get($id){
         return $this->db->selectSingle($this->_table, $id);
     }
 

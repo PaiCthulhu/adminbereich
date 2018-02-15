@@ -4,24 +4,22 @@
     <section class="main">
         <div class="card full">
             <div class="card-header">
-                <h5 class="card-title">@include('default.icon',['i'=>'users','t'=>'s']) &nbsp;Usuários</h5>
-                @if (Auth::hasPerm('users_add'))
+                <h5 class="card-title">@include('default.icon',['i'=>'cogs','t'=>'s']) &nbsp;Configurações</h5>
+                @if (Auth::hasPerm('configs_add'))
                     <a href="{{PATH.DS.'admin'.DS.'usuarios'.DS.'add'}}" class="btn btn-sm btn-secondary float-right">&plus; Novo</a>
                 @endif
             </div>
             <div class="card-body">
                 <table class="table-view row">
                     <thead>
-                        <tr>
-                            <td></td>
-                            <td>Nome</td>
-                            <td>Usuário</td>
-                            <td>E-mail</td>
-                            <td></td>
-                        </tr>
+                    <tr>
+                        <td>Título</td>
+                        <td>Valor</td>
+                        <td></td>
+                    </tr>
                     </thead>
                     <tbody>
-                    @each('admin.pages.usuarios.row', $usuarios, 'usuario')
+                    @each('admin.pages.configs.row', $configs, 'config')
                     </tbody>
                 </table>
             </div>

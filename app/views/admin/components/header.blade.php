@@ -1,8 +1,11 @@
 <header id="topbar">
     <div class="sidebar-header">
-        <h3>Logo</h3>
+        <div class="logo"></div>
+        <div class="menu">
+            @include('default.icon',['i'=>'bars','t'=>'s'])
+        </div>
     </div>
-    <div class="float-right">
+    <div class="view-site">
         <a href="{{PATH}}">Ver Site</a>
     </div>
 </header>
