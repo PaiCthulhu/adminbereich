@@ -33,17 +33,20 @@ function dump($var){
  * @throws Exception Caso não encontre a classe, gera uma exceção
  */
 function __autoload($class) {
-    if (file_exists(ROOT . DS . 'library' . DS . strtolower($class) . '.class.php')) {
-        require_once(ROOT . DS . 'library' . DS . strtolower($class) . '.class.php');
+    if (file_exists(ROOT . DS . 'library' . DS . $class . '.class.php')) {
+        require_once(ROOT . DS . 'library' . DS . $class . '.class.php');
     }
-    else if (file_exists(ROOT . DS . 'app' . DS . 'controllers' . DS . strtolower($class) . '.php')) {
-        require_once(ROOT . DS . 'app' . DS . 'controllers' . DS . strtolower($class) . '.php');
+    else if (file_exists(ROOT . DS . 'app' . DS . 'controllers' . DS . ucfirst($class) . '.php')) {
+        require_once(ROOT . DS . 'app' . DS . 'controllers' . DS . ucfirst($class) . '.php');
     }
     else if (file_exists(ROOT . DS . 'app' . DS . 'models' . DS . $class . '.php')) {
         require_once(ROOT . DS . 'app' . DS . 'models' . DS . $class . '.php');
     }
-    else if(file_exists(ROOT.DS.'vendor'.DS.$class.DS.strtolower($class).'.php')){
-        require_once(ROOT.DS.'vendor'.DS.$class.DS.strtolower($class).'.php');
+    else if (file_exists(ROOT . DS . 'app' . DS . 'library' . DS . $class . '.php')) {
+        require_once(ROOT . DS . 'app' . DS . 'library' . DS . $class . '.php');
+    }
+    else if(file_exists(ROOT.DS.'vendor'.DS.$class.DS.$class.'.php')){
+        require_once(ROOT.DS.'vendor'.DS.$class.DS.$class.'.php');
     }
     else {
         throw new Exception('Classe "'.$class.'" não encontrada!');

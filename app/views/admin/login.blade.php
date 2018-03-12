@@ -6,7 +6,7 @@
             <div class="row full-size justify-content-center">
                 <div class="col-4 align-self-center card">
                     <div class="card-header">
-                        <h1>Faça login para acessar o painel</h1>
+                        <h1>@include('default.icon', ['i'=>"sign-in-alt",'t'=>"s"]) Área Administrativa</h1>
                     </div>
                     <div class="card-body">
                         @if (Session::has('login_error'))
@@ -17,6 +17,9 @@
                                 </button>
                             </div>
                         @endif
+                        <p class="text-center">
+                            Faça login para acessar o painel
+                        </p>
                         <form method="post" action="{{PATH}}/admin/login">
                             <div class="form-group">
                                 <input name="user" type="text" class="form-control" placeholder="login" />

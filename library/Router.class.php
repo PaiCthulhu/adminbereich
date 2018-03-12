@@ -25,6 +25,10 @@ class Router{
                 else
                     $o->{$params[1]}();
             }
+            else if(method_exists($params[0], '__default')){
+                $o = new $params[0]();
+                    $o->__default($params[1]);
+            }
             else{
                 echo "Rota não existente: Método '{$params[1]}' não encontrado";
                 dump($url);

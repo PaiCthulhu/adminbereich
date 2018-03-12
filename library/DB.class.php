@@ -85,6 +85,12 @@ class DB {
         return $this->fetch($query, $mode);
     }
 
+    /**
+     * @param $table
+     * @param $id
+     * @param int $mode
+     * @return bool|array|stdClass
+     */
     function selectSingle($table, $id, $mode = PDO::FETCH_OBJ){
         $k = $this->handle->query("SHOW KEYS FROM {$table} WHERE Key_name = 'PRIMARY'");
         if($k === false){
@@ -124,6 +130,69 @@ class DB {
             return $q[0];
         else
             return $q;
+    }
+
+    /**
+     * Cria e executa uma query de inserção no banco de dados, com os valores de um array
+     * @param string $table Nome da tabela
+     * @param array $params Array de dados a serem inseridos, onde a chave deve ser o nome do campo
+     * @return array|bool Retorna true caso a inserção suceda, caso contrário, retorna o array com código e mensagem do erro
+     */
+    function insert($table, $params){
+        $fields = $values = '';
+        foreach ($params as $key=>$value){
+            $fields.= '`'.$key.'`,';
+            if(is_array($value) || is_string($value))
+                $value = json_encode($value);
+            $values.= $value.",";
+        }
+        $fields = rtrim($fields,',');
+        $values = rtrim($values,',');
+        $query = "INSERT INTO `".$table."` (".$fields.") VALUES (".$values.")";
+
+        return $this->run($query);
+    }
+
+    /**
+     * @param string $table
+     * @param array $params
+     * @param mixed $id
+     * @return array|bool
+     */
+    function update($table, $params, $id){
+        $changes = '';
+        foreach ($params as $key=>$value){
+            if(!empty($value))
+                $changes.= '`'.$key.'` = '.json_encode($value).',';
+        }
+        $changes = rtrim($changes,',');
+
+        if(is_array($id)){
+            $key = array_keys($id);
+            $identity = "`{$key[0]}` = ".json_encode($id[$key[0]]);
+        }
+        else
+            $identity = "`id_{$table}` = {$id}";
+
+        $query = "UPDATE `".$table."` SET  ".$changes." WHERE ".$identity;
+        return $this->query($query);
+    }
+
+    function delete($table, $params){
+        $where = [];
+        if(!is_array($params) || empty($params))
+            return [-1,-1,"Parâmetros Inválidos"];
+        foreach ($params as $key=>$value)
+            $where[] = "`{$key}` = ".json_encode($value);
+        $query = "DELETE FROM `".$table."` WHERE ".implode(' AND ', $where);
+        return $this->query($query);
+    }
+
+    function run($query){
+        $q = $this->handle->prepare($query);
+        if($q === false)
+            return $this->handle->errorInfo();
+        return $q->execute();
     }
 
     /**

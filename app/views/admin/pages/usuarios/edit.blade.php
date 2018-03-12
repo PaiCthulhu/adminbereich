@@ -5,28 +5,29 @@
         <div class="card full">
             <div class="card-header">
                 <h5 class="card-title">@include('default.icon',['i'=>'user','t'=>'s']) &nbsp;Editar Usuário #{{$usuario->id_usuario}} - {{$usuario->nome}}</h5>
-                <a href="{{PATH.DS.'admin'.DS.'usuarios'}}" class="float-right"><< Voltar</a>
+                <a href="{{PATH.DS}}admin/usuarios" class="float-right"><< Voltar</a>
             </div>
             <div class="card-body">
-                <form>
+                <form action="{{PATH.DS}}admin/usuarios/update" method="POST">
+                    <input type="hidden" id="id" name="id_usuario" value="{{$usuario->id_usuario}}" />
                     <div class="form-group">
                         <label for="nome">Nome:</label>
-                        <input type="text" id="nome" name="name" class="form-control" value="{{$usuario->nome}}" />
+                        <input type="text" id="nome" name="nome" class="form-control" value="{{$usuario->nome}}" />
                     </div>
                     <div class="form-group">
                         <label for="usuario">Usuário:</label>
-                        <input type="text" id="usuario" name="user" class="form-control" value="{{$usuario->username}}" />
+                        <input type="text" id="usuario" name="username" class="form-control" value="{{$usuario->username}}" />
                     </div>
                     <div class="form-group">
                         <label for="email">E-mail:</label>
-                        <input type="email" id="email" name="mail" class="form-control" value="{{$usuario->email}}" />
+                        <input type="email" id="email" name="email" class="form-control" value="{{$usuario->email}}" />
                     </div>
                     <div class="form-group">
                         <label for="senha">Senha:</label>
-                        <input type="password" id="senha" name="pswd" class="form-control" autocomplete="off" placeholder="Somente digite a senha se quiser alterar a atual" />
+                        <input type="password" id="senha" name="senha" class="form-control" autocomplete="off" placeholder="Somente digite a senha se quiser alterar a atual" />
                     </div>
                     <div class="form-group text-center">
-                        <button class="btn btn-primary" type="submit">Salvar</button>
+                        <button name="_edit" class="btn btn-primary" type="submit">Salvar</button>
                     </div>
                 </form>
             </div>
