@@ -16,6 +16,14 @@ class Model{
         return $this->db->selectSingle($this->_table, $id);
     }
 
+    function getByField($field, $value){
+        return $this->db->selectSingleByFields($this->_table, [$field=>$value]);
+    }
+
+    function getAllOrderBy($field = 'order', $desc = false){
+        return $this->db->fetch("SELECT * FROM {$this->_table} ORDER BY `{$field}` ".(($desc)?'DESC':''));
+    }
+
 
     function find($params){
         return $this->db->selectSingleByFields($this->_table, $params);

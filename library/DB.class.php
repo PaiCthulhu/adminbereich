@@ -144,11 +144,13 @@ class DB {
             $fields.= '`'.$key.'`,';
             if(is_array($value) || is_string($value))
                 $value = json_encode($value);
+            else if (is_string($value))
+                $value = $this->sanitize($value);
             $values.= $value.",";
         }
         $fields = rtrim($fields,',');
         $values = rtrim($values,',');
-        $query = "INSERT INTO `".$table."` (".$fields.") VALUES (".$values.")";
+        $query = "INSERT INTO `{$table}` ({$fields}) VALUES ({$values})";
 
         return $this->run($query);
     }
@@ -162,8 +164,14 @@ class DB {
     function update($table, $params, $id){
         $changes = '';
         foreach ($params as $key=>$value){
-            if(!empty($value))
-                $changes.= '`'.$key.'` = '.json_encode($value).',';
+            if(!empty($value)){
+                if(is_array($value))
+                    $value = json_encode($value);
+                else if (is_string($value))
+                    $value = $this->sanitize($value);
+                $changes.= "`{$key}` = {$value},";
+            }
+
         }
         $changes = rtrim($changes,',');
 

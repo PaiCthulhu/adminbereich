@@ -7,6 +7,10 @@ class Config extends Model {
         $this->_pk = 'id';
     }
 
+    function getByKey($key){
+        return $this->getByField('key', $key)->val;
+    }
+
     function update($id, $params){
         return $this->db->update($this->_table, $params, ['id'=>$id]);
     }
