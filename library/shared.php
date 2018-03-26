@@ -55,7 +55,8 @@ function __autoload($class) {
 
 function exception_handler($exception) {
     $erro = new Controller();
-    $erro->render('pages.404', ['erro'=>$exception->getMessage(),'dump'=>$exception]);
+    $config = new Config();
+    $erro->render('pages.404', ['config'=>$config, 'erro'=>$exception->getMessage(),'dump'=>$exception]);
 }
 
 set_exception_handler('exception_handler');

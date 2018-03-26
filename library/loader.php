@@ -6,4 +6,6 @@ require_once(ROOT.DS.'vendor'.DS.'BladeOne'.DS.'BladeOne.php');
 
 require_once(ROOT.DS.'config'.DS.'routes.php');
 
+SassCompiler::run(ROOT."/public/sass/", ROOT."/public/css/", '\Leafo\ScssPhp\Formatter\Compressed');
+
 $routes->route($_GET['url']);

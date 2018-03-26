@@ -16,7 +16,7 @@ class Controller{
     function __construct(){
         $this->blade  = new eftec\bladeone\BladeOne(Controller::VIEWS, Controller::CACHE);
         $singular = $this->getSingular(get_class($this));
-        if(!isset($this->_model) && !static::DBLESS && class_exists($singular))
+        if(!isset($this->_model) && !static::DBLESS && get_class($this) != 'Controller' && class_exists($singular))
             $this->_model = new $singular();
         $this->admin = false;
     }
