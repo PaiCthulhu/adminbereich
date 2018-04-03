@@ -45,6 +45,9 @@ function __autoload($class) {
     else if (file_exists(ROOT . DS . 'app' . DS . 'library' . DS . $class . '.php')) {
         require_once(ROOT . DS . 'app' . DS . 'library' . DS . $class . '.php');
     }
+    else if (file_exists(ROOT . DS . 'app' . DS . 'library' . DS . $class . '.class.php')) {
+        require_once(ROOT . DS . 'app' . DS . 'library' . DS . $class . '.class.php');
+    }
     else if(file_exists(ROOT.DS.'vendor'.DS.$class.DS.$class.'.php')){
         require_once(ROOT.DS.'vendor'.DS.$class.DS.$class.'.php');
     }

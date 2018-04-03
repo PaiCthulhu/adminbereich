@@ -36,4 +36,8 @@ class Session {
         Session::start();
         return (!empty($_SESSION[$index]));
     }
+
+    static function viewAll(){
+        return (object) $_SESSION;
+    }
 }
