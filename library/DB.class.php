@@ -63,12 +63,13 @@ class DB {
      * @return array|bool
      */
     function selectTables($search = ''){
-        $query = "SHOW TABLES";
+        $q = new Query();
+        $q->showTables();
         if(is_string($search) && $search != ''){
             $search = $this->sanitize($search);
-            $query .= " LIKE '%{$search}%'";
+            $q->extra(" LIKE '%{$search}%'");
         }
-        $res = $this->fetch($query);
+        $res = $this->fetch($q);
         if($res === false)
             return $res;
         else{
@@ -81,8 +82,8 @@ class DB {
     }
 
     function selectAll($table, $mode = PDO::FETCH_OBJ){
-        $query = "SELECT * FROM `{$table}`";
-        return $this->fetch($query, $mode);
+        $q = new Query();
+        return $this->fetch($q->select()->from($table), $mode);
     }
 
     /**
@@ -92,12 +93,14 @@ class DB {
      * @return bool|array|stdClass
      */
     function selectSingle($table, $id, $mode = PDO::FETCH_OBJ){
-        $k = $this->handle->query("SHOW KEYS FROM {$table} WHERE Key_name = 'PRIMARY'");
+        $q = new Query();
+        $k = $this->handle->query($q->showIndex('KEYS')->from($table)->where(['Key_name','PRIMARY']));
         if($k === false){
             return $this->errorHandler("Tabela \"{$table}\" não encontrada!", $this->handle->errorInfo());
         }
         $k = $k->fetchAll(PDO::FETCH_OBJ)[0];
         $query = "SELECT * FROM `{$table}` WHERE `{$table}`.`{$k->Column_name}` = :id LIMIT 1";
+        //$q->select()->from($table)->where(["{$table}`.`{$k->Column_name}", ":id"])->limit(1) TODO Arrumar esse aqui pra usar o Query
         $q = $this->handle->prepare($query);
         $q->bindParam(':id', $id, PDO::PARAM_INT);
         $q->execute();
@@ -139,63 +142,35 @@ class DB {
      * @return array|bool Retorna true caso a inserção suceda, caso contrário, retorna o array com código e mensagem do erro
      */
     function insert($table, $params){
-        $fields = $values = '';
-        foreach ($params as $key=>$value){
-            $fields.= '`'.$key.'`,';
-            if(is_array($value) || is_string($value))
-                $value = json_encode($value);
-            else if (is_string($value))
-                $value = $this->sanitize($value);
-            $values.= $value.",";
-        }
-        $fields = rtrim($fields,',');
-        $values = rtrim($values,',');
-        $query = "INSERT INTO `{$table}` ({$fields}) VALUES ({$values})";
-
-        return $this->run($query);
+        $q = new Query();
+        list($fields, $values) = DB::keyValSplit($params);
+        return $this->run($q->insert($table, $fields)->values($values));
     }
 
     /**
      * @param string $table
      * @param array $params
-     * @param mixed $id
+     * @param array|int $id
      * @return array|bool
      */
     function update($table, $params, $id){
-        $changes = '';
-        foreach ($params as $key=>$value){
-            if(!empty($value)){
-                if(is_array($value))
-                    $value = json_encode($value);
-                else if (is_string($value))
-                    $value = $this->sanitize($value);
-                $changes.= "`{$key}` = {$value},";
-            }
-
-        }
-        $changes = rtrim($changes,',');
-
-        if(is_array($id)){
-            $key = array_keys($id);
-            $identity = "`{$key[0]}` = ".json_encode($id[$key[0]]);
-        }
-        else
-            $identity = "`id_{$table}` = {$id}";
-
-        $query = "UPDATE `".$table."` SET  ".$changes." WHERE ".$identity;
-        return $this->query($query);
+        $q = new Query();
+        if(!is_array($id))
+            $id = [sprintf(DB_PK_FORMAT, $table), $id];
+        return $this->query($q->update($table)->set($params)->where($id));
     }
 
     function delete($table, $params){
-        $where = [];
+        $q = new Query();
         if(!is_array($params) || empty($params))
             return [-1,-1,"Parâmetros Inválidos"];
-        foreach ($params as $key=>$value)
-            $where[] = "`{$key}` = ".json_encode($value);
-        $query = "DELETE FROM `".$table."` WHERE ".implode(' AND ', $where);
-        return $this->query($query);
+        return $this->query($q->delete($table)->where($params));
     }
 
+    /**
+     * @param $query
+     * @return array|bool
+     */
     function run($query){
         $q = $this->handle->prepare($query);
         if($q === false)

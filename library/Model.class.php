@@ -6,7 +6,7 @@ class Model{
     function __construct(){
         $this->db = new DB(DB_HOST, DB_USER, DB_PSWD, DB_NAME);
         $this->_table = strtolower(get_class($this));
-        $this->_pk = 'id_'.$this->_table;
+        $this->_pk = sprintf(DB_PK_FORMAT, $this->_table);
         $this->created = time();
     }
 
@@ -75,6 +75,37 @@ class Model{
         $q = "SELECT {$fk} FROM {$relTable} WHERE {$pk} = ".$this->{$this->_pk};
         $r = $this->db->fetch($q)[0];
         return $relClass::load($r->{$relClass->_pk});
+    }
+
+    /**
+     * @param Model $relClass
+     * @param string $relTable
+     * @param string $fk
+     * @param string $pk
+     * @return array|bool
+     */
+    function relAttach($relClass, $relTable = '', $fk = '', $pk = ''){
+        $relTable = $relTable ?: $this->_table.'_'.$relClass->_table;
+        $pk = $pk ?: $this->_pk;
+        $fk = $fk ?: $relClass->_pk;
+        $q = "INSERT INTO {$relTable}(`{$pk}`,`{$fk}`) VALUES ({$this->{$pk}}, {$relClass->{$fk}})";
+        return $this->db->run($q);
+
+    }
+
+    function relDetach($relClass, $relTable = '', $fk = '', $pk = ''){
+        $relTable = $relTable ?: $this->_table.'_'.$relClass->_table;
+        $pk = $pk ?: $this->_pk;
+        $fk = $fk ?: $relClass->_pk;
+        $q = "DELETE FROM {$relTable} WHERE `{$pk}` = {$this->{$pk}} AND `{$fk}` = {$relClass->{$fk}}";
+        return $this->db->run($q);
+    }
+
+    function relDetachAll($relClass, $relTable = '', $pk = ''){
+        $relTable = $relTable ?: $this->_table.'_'.$relClass->_table;
+        $pk = $pk ?: $this->_pk;
+        $q = "DELETE FROM {$relTable} WHERE `{$pk}` = {$this->{$pk}}";
+        return $this->db->run($q);
     }
 
     /**

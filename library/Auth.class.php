@@ -2,11 +2,18 @@
 
 class Auth {
 
-    static function login($user, $pswd, $class = 'User'){
-        $usuarios = new $class();
-        $usuario = $usuarios->find(['username'=>$user]);
-        if($usuario === false)
-            return $usuario;
+    /**
+     * @param string $user
+     * @param string $pswd
+     * @param string $class
+     * @return bool
+     */
+    static function login($user, $pswd, $class = USER_CLASS){
+        $usuario = new $class();
+        $u = $usuario->find(['username'=>$user]);
+        if($u === false)
+            return false;
+        $usuario = $usuario->load($u->id_usuario);
         if(password_verify($pswd, $usuario->senha)){
             Session::set('mail', $usuario->email);
             Session::set('pswd', $pswd);
