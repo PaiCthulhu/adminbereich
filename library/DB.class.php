@@ -99,9 +99,8 @@ class DB {
             return $this->errorHandler("Tabela \"{$table}\" não encontrada!", $this->handle->errorInfo());
         }
         $k = $k->fetchAll(PDO::FETCH_OBJ)[0];
-        $query = "SELECT * FROM `{$table}` WHERE `{$table}`.`{$k->Column_name}` = :id LIMIT 1";
-        //$q->select()->from($table)->where(["{$table}`.`{$k->Column_name}", ":id"])->limit(1) TODO Arrumar esse aqui pra usar o Query
-        $q = $this->handle->prepare($query);
+        $q->select()->from($table)->where(["{$table}`.`{$k->Column_name}", ":id"])->limit(1);
+        $q = $this->handle->prepare($q);
         $q->bindParam(':id', $id, PDO::PARAM_INT);
         $q->execute();
         if($q->rowCount() == 0)
@@ -117,22 +116,12 @@ class DB {
      * @return stdClass|bool
      */
     function selectSingleByFields($table, $params, $mode = PDO::FETCH_OBJ){
-        $whereand = 'WHERE';
-        $params = $this->sanitize($params);
-        list($key, $val) = DB::keyValSplit($params);
-        $query = "SELECT * FROM `{$table}`";
-        foreach ($key as $i=>$v){
-            $col = trim($key[$i], "'");
-            $query .= " {$whereand} `{$table}`.`{$col}` = {$val[$i]}";
-            if($whereand == 'WHERE')
-                $whereand = 'AND';
-        }
-        $query .= " LIMIT 1";
-        $q = $this->fetch($query, $mode);
-        if(is_array($q))
-            return $q[0];
+        $q = new Query();
+        $r = $this->fetch($q->select()->from($table)->where($params)->limit(1), $mode);
+        if(is_array($r))
+            return $r[0];
         else
-            return $q;
+            return $r;
     }
 
     /**

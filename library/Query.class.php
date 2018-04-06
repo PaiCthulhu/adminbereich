@@ -125,7 +125,7 @@ class Query{
      * @return Query $this
      */
     function from($table){
-        $this->query .= "FROM `{$table}`";
+        $this->query .= "FROM `{$table}` ";
         return $this;
     }
 
@@ -230,8 +230,12 @@ class Query{
      * @return bool|string
      */
     protected function valueEscape($val){
-        if(is_string($val))
-            return "'{$val}'";
+        if(is_string($val)){
+            if(preg_match('/^\:\S*/', $val) == 1 && $val != ':')
+                return $val;
+            else
+                return "'{$val}'";
+        }
         else if(is_int($val))
             return $val;
         else
