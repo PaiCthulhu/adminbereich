@@ -1,13 +1,13 @@
 <?php
 class Model{
     public $created, $updated;
-    protected $db, $_table, $_pk;
+    protected $db, $_table, $_pk, $_columns;
 
     function __construct(){
         $this->db = new DB(DB_HOST, DB_USER, DB_PSWD, DB_NAME);
         $this->_table = strtolower(get_class($this));
         $this->_pk = sprintf(DB_PK_FORMAT, $this->_table);
-        $this->created = time();
+        $this->created = date('Y-m-d G:i:s');
     }
 
     function all(){
@@ -26,7 +26,6 @@ class Model{
         return $this->db->fetch("SELECT * FROM {$this->_table} ORDER BY `{$field}` ".(($desc)?'DESC':''));
     }
 
-
     function find($params){
         return $this->db->selectSingleByFields($this->_table, $params);
     }
@@ -43,6 +42,24 @@ class Model{
         return $this->db->delete($this->_table, [$this->_pk=>$id]);
     }
 
+    function save(){
+        $this->_loadColumns();
+        $opt = [];
+        foreach ($this->_columns as $column)
+            $opt[$column->name] = $this->columnCheck($column, $this->{$column->name});
+        if(isset($opt[$this->_pk]) && !empty($opt[$this->_pk])){
+            $id = $opt[$this->_pk];
+            unset($opt[$this->_pk]);
+            $r = $this->update($id, $opt);
+        }
+        else {
+            unset($opt[$this->_pk]);
+            $r = $this->create($opt);
+        }
+
+        return $r;
+    }
+
     /**
      * @param int $id
      * @return bool|Model
@@ -55,9 +72,26 @@ class Model{
         return $n->cast($l, $n);
     }
 
+    function getTable(){
+        return $this->_table;
+    }
 
     function pk(){
         return $this->_pk;
+    }
+
+    function lastId(){
+        return $this->db->lastId();
+    }
+
+    /**
+     * @throws Exception
+     */
+    function _loadColumns(){
+        $c = $this->db->selectColumns($this->_table);
+        if($c === false)
+            throw new Exception('Erro ao carregar colunas do banco de dados');
+        $this->_columns = $c;
     }
 
     /**
@@ -110,10 +144,10 @@ class Model{
 
     /**
      * @param stdClass $source
-     * @param string|object $dest
-     * @return object
+     * @param string|Model $dest
+     * @return Model
      */
-    function cast($source, $dest){
+    private function cast($source, $dest){
         if(is_string($dest))
             $dest = new $dest();
         foreach (get_object_vars($source) as $prop=>$val){
@@ -129,4 +163,39 @@ class Model{
     static function numberFormat($number, $decimals = 0){
         return number_format($number, $decimals, ',', '.');
     }
+
+    private function columnCheck($column, $value = null){
+        //Check Null
+        if($value === null && $column->cannull == 'NO')
+            if($column->name == $this->_pk && $column->index == 'PRI')
+                return null;
+            else if($column->default == 'CURRENT_TIMESTAMP')
+                return $this->created;
+            else
+                throw new Exception("Coluna '{$column->name}' não pode ter um valor nulo");
+
+        //Check int
+        if($column->type == 'int' && !is_int($value))
+            if(is_string($value) && ctype_digit($value))
+                return $value+0;
+            else
+                throw new Exception("Coluna '{$column->name}' requer um valor inteiro, ".Dict::translate(gettype($value))." recebido...");
+
+        //Check String
+        if($column->type == 'varchar'){
+            //tipo
+            if(!is_string($value))
+                if(is_object($value) && method_exists($value,'__toString'))
+                    $value = $value->__toString();
+                else
+                    throw new Exception("Coluna '{$column->name}' requer um valor de texto, ".Dict::translate(gettype($value))." recebido...");
+            //tamanho
+            if(strlen($value) > $column->length)
+                throw new Exception("O valor recebido (".strlen($value)." caracteres) ultrapassa o limite de tamanho da coluna '{$column->name}' que é de {$column->length}.");
+
+        }
+
+        return $value;
+    }
+
 }

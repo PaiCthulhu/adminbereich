@@ -81,6 +81,19 @@ class DB {
         }
     }
 
+    function selectColumns($table){
+        $q = new Query();
+        $q->select(
+            ['ORDINAL_POSITION'=>'col_id',
+             'COLUMN_NAME'=>'name',
+             'COLUMN_DEFAULT'=>'default',
+             'IS_NULLABLE'=>'cannull',
+             'DATA_TYPE'=>'type',
+             'CHARACTER_MAXIMUM_LENGTH'=>'length',
+             'COLUMN_KEY'=>'index'])->from(['INFORMATION_SCHEMA','COLUMNS'])->where(['TABLE_SCHEMA'=>DB_NAME,'TABLE_NAME'=>$table]);
+        return $this->fetch($q);
+    }
+
     function selectAll($table, $mode = PDO::FETCH_OBJ){
         $q = new Query();
         return $this->fetch($q->select()->from($table), $mode);
@@ -165,6 +178,10 @@ class DB {
         if($q === false)
             return $this->handle->errorInfo();
         return $q->execute();
+    }
+
+    function lastId(){
+        return $this->handle->lastInsertId();
     }
 
     /**

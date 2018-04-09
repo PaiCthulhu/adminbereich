@@ -35,9 +35,7 @@ class Query{
             }
             $q .= ")";
         }
-        else
-            $q .= " ";
-        $this->query = $q;
+        $this->query = $q." ";
         return $this;
     }
 
@@ -112,7 +110,12 @@ class Query{
             $q .= "* ";
         else
             foreach ($fields as $k=>$field){
-                $q.= "`{$field}`";
+                if($this->isAssoc($fields))
+                    $q.= "`{$k}` AS ".$this->valueEscape($field);
+                else if(is_array($field))
+                    $q.= "`{$field[0]}` AS ".$this->valueEscape($field[1]);
+                else
+                    $q.= "`{$field}`";
                 $q.= ($k !== $this->arrayLastKey($fields))?", ":" ";
             }
 
@@ -121,11 +124,14 @@ class Query{
     }
 
     /**
-     * @param string $table
+     * @param string|array $table
      * @return Query $this
      */
     function from($table){
-        $this->query .= "FROM `{$table}` ";
+        if(is_array($table))
+            $this->query .= "FROM `{$table[0]}`.`{$table[1]}` ";
+        else
+            $this->query .= "FROM `{$table}` ";
         return $this;
     }
 
@@ -230,8 +236,10 @@ class Query{
      * @return bool|string
      */
     protected function valueEscape($val){
-        if(is_string($val)){
-            if(preg_match('/^\:\S*/', $val) == 1 && $val != ':')
+        if(is_null($val))
+            return 'NULL';
+        else if(is_string($val)){
+            if(preg_match('/^\:[^\s\:]*(?<!:)/', $val) == 1 && $val != ':')
                 return $val;
             else
                 return "'{$val}'";
