@@ -148,7 +148,10 @@ class Query{
             else
                 foreach ($conds as $key=>$row){
                     if(!is_array($row))
-                        $q .= "`{$key}` = ".$this->valueEscape($row);
+                        if(is_null($row))
+                            $q .= "`{$key}` IS ".$this->valueEscape($row);
+                        else
+                            $q .= "`{$key}` = ".$this->valueEscape($row);
                     else
                         if(count($row) == 2)
                             $q .= "`{$key}` {$row[0]} ".$this->valueEscape($row[1]);

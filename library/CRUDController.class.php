@@ -29,7 +29,7 @@ class CRUDController extends Controller {
      */
     function add(){
         $this->authCheck('add');
-        parent::render($this->getView('add'));
+        static::render($this->getView('add'));
     }
 
     /**

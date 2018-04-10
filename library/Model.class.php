@@ -30,6 +30,10 @@ class Model{
         return $this->db->selectSingleByFields($this->_table, $params);
     }
 
+    function findAll($params){
+        return $this->db->selectAllByFields($this->_table, $params);
+    }
+
     function create($params){
         return $this->db->insert($this->_table, $params);
     }

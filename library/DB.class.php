@@ -138,6 +138,16 @@ class DB {
     }
 
     /**
+     * @param $table
+     * @param $params
+     * @param int $mode
+     * @return stdClass|bool
+     */
+    function selectAllByFields($table, $params, $mode = PDO::FETCH_OBJ){
+        return $this->fetch((new Query())->select()->from($table)->where($params), $mode);
+    }
+
+    /**
      * Cria e executa uma query de inserção no banco de dados, com os valores de um array
      * @param string $table Nome da tabela
      * @param array $params Array de dados a serem inseridos, onde a chave deve ser o nome do campo
