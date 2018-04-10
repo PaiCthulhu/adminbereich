@@ -32,7 +32,7 @@ function dump($var){
  * @param string $class Nome da Classe
  * @throws Exception Caso não encontre a classe, gera uma exceção
  */
-function __autoload($class) {
+spl_autoload_register(function ($class) {
     if (file_exists(ROOT . DS . 'library' . DS . $class . '.class.php')) {
         require_once(ROOT . DS . 'library' . DS . $class . '.class.php');
     }
@@ -54,7 +54,7 @@ function __autoload($class) {
     else {
         throw new Exception('Classe "'.$class.'" não encontrada!');
     }
-}
+});
 
 function exception_handler($exception) {
     $c = MAIN_CLASS;
