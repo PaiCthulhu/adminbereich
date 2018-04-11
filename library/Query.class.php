@@ -241,6 +241,8 @@ class Query{
     protected function valueEscape($val){
         if(is_null($val))
             return 'NULL';
+        else if(is_bool($val))
+            return ($val)?'TRUE':'FALSE';
         else if(is_string($val)){
             if(preg_match('/^\:[^\s\:]*(?<!:)/', $val) == 1 && $val != ':')
                 return $val;
@@ -269,7 +271,7 @@ class Query{
      */
     protected function arrayClearEmpty($array){
         return array_filter($array, function ($value) {
-            return !empty($value) || $value === 0;
+            return !empty($value) || $value === 0 || $value === false;
         });
     }
 

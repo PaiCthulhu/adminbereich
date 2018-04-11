@@ -66,7 +66,7 @@ class Model{
 
     /**
      * @param int $id
-     * @return bool|Model
+     * @return bool|static
      */
     static function load($id){
         $n = new static();

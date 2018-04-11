@@ -46,7 +46,7 @@ class CRUDController extends Controller {
         if(!$edit)
             throw new Exception(strtoupper($this->descPrefix)." {$this->desc} id #{$id} não existe ou não foi encontrad{$this->descPrefix}");
         else
-            parent::render($this->getView('edit'), [strtolower(get_class($this->_model))=>$edit]);
+            static::render($this->getView('edit'), [strtolower(get_class($this->_model))=>$edit]);
     }
 
     function save(){
