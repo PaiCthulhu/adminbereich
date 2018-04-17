@@ -19,7 +19,7 @@ class CRUDController extends Controller {
         $this->_redirect = true;
         $this->_authPrefix = strtolower(get_class($this->_model)).'s';
         $this->_authFailRedir = PATH;
-        $this->desc = $this->_model;
+        $this->desc = get_class($this->_model);
         $this->descPrefix = 'o';
         $this->view_folder = '';
     }
@@ -43,7 +43,7 @@ class CRUDController extends Controller {
          */
         $model = new $this->_model();
         $edit = $model::load($id);
-        if(!$edit)
+        if($edit === false)
             throw new Exception(strtoupper($this->descPrefix)." {$this->desc} id #{$id} não existe ou não foi encontrad{$this->descPrefix}");
         else
             static::render($this->getView('edit'), [strtolower(get_class($this->_model))=>$edit]);

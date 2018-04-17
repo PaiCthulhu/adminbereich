@@ -1,4 +1,5 @@
 <?php
+
 class Router{
     protected $routes;
 
@@ -20,14 +21,18 @@ class Router{
                 $params[1] = 'index';
             if(method_exists($params[0], $params[1])){
                 $o = new $params[0]();
-                if(isset($params[2]))
-                    $o->{$params[1]}($params[2]);
+                if(isset($params[2])){
+                    array_shift($params);
+                    $method = array_shift($params);
+                    $o->{$method}(implode('/', $params));
+                }
                 else
                     $o->{$params[1]}();
             }
             else if(method_exists($params[0], '__default')){
-                $o = new $params[0]();
-                    $o->__default($params[1]);
+                $o = array_shift($params);
+                $o = new $o();
+                $o->__default(implode('/', $params));
             }
             else{
                 echo "Rota não existente: Método '{$params[1]}' não encontrado";
@@ -36,9 +41,7 @@ class Router{
             }
         }
         else{
-
-
-            echo "Rota não existente: Classe '{$params[1]}' não encontrada";
+            echo "Rota não existente: Classe '{$params[0]}' não encontrada";
             dump($url);
             dump($_SERVER);
         }
