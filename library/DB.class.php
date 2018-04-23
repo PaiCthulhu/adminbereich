@@ -151,7 +151,7 @@ class DB {
      * Cria e executa uma query de inserção no banco de dados, com os valores de um array
      * @param string $table Nome da tabela
      * @param array $params Array de dados a serem inseridos, onde a chave deve ser o nome do campo
-     * @return array|bool Retorna true caso a inserção suceda, caso contrário, retorna o array com código e mensagem do erro
+     * @return array|bool Retorna TRUE caso a inserção suceda, caso contrário, retorna o array com código e mensagem do erro
      */
     function insert($table, $params){
         $q = new Query();
@@ -160,10 +160,10 @@ class DB {
     }
 
     /**
-     * @param string $table
-     * @param array $params
-     * @param array|int $id
-     * @return array|bool
+     * @param string $table Nome da tabela
+     * @param array $params Array de dados a serem atualizados, onde a chave deve ser o nome do campo
+     * @param array|int $id todo escrever a explicação disso aqui
+     * @return array|bool Retorna TRUE caso a inserção suceda, caso contrário, retorna o array com código e mensagem do erro
      */
     function update($table, $params, $id){
         $q = new Query();
@@ -172,6 +172,11 @@ class DB {
         return $this->query($q->update($table)->set($params)->where($id));
     }
 
+    /**
+     * @param string $table Nome da tabela
+     * @param array $params Array de parâmetros para a exclusão, baseado na Query::where
+     * @return array|PDOStatement
+     */
     function delete($table, $params){
         $q = new Query();
         if(!is_array($params) || empty($params))
@@ -187,7 +192,10 @@ class DB {
         $q = $this->handle->prepare($query);
         if($q === false)
             return $this->handle->errorInfo();
-        return $q->execute();
+        $r = $q->execute();
+        if($r === false)
+            return [-1, -1, 'Erro ao executar query: '.$query];
+        return $r;
     }
 
     function lastId(){

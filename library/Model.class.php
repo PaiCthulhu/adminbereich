@@ -34,18 +34,36 @@ class Model{
         return $this->db->selectAllByFields($this->_table, $params);
     }
 
+    /**
+     * @param array $params Array de dados a serem inseridos, onde a chave deve ser o nome do campo
+     * @return array|bool Retorna TRUE caso suceda, do contrário, um array com o erro
+     */
     function create($params){
         return $this->db->insert($this->_table, $params);
     }
 
+    /**
+     * @param int $id
+     * @param array $params Array de dados a serem inseridos, onde a chave deve ser o nome do campo
+     * @return array|bool Retorna TRUE caso suceda, do contrário, um array com o erro
+     */
     function update($id, $params){
         return $this->db->update($this->_table, $params, $id);
     }
 
+    /**
+     * @param $id
+     * @return array|PDOStatement
+     */
     function delete($id){
         return $this->db->delete($this->_table, [$this->_pk=>$id]);
     }
 
+    /**
+     * @todo Explicar melhor isso aqui
+     * @return array|bool
+     * @throws Exception
+     */
     function save(){
         $this->_loadColumns();
         $opt = [];
@@ -182,6 +200,8 @@ class Model{
         if($column->type == 'int' && !is_int($value))
             if(is_string($value) && ctype_digit($value))
                 return $value+0;
+            else if($column->cannull == 'YES' AND $value === null)
+                return null;
             else
                 throw new Exception("Coluna '{$column->name}' requer um valor inteiro, ".Dict::translate(gettype($value))." recebido...");
 
