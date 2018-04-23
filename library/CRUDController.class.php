@@ -18,7 +18,7 @@ class CRUDController extends Controller {
             $this->_model = new $singular();
         $this->_redirect = true;
         $this->_authPrefix = strtolower(get_class($this->_model)).'s';
-        $this->_authFailRedir = PATH;
+        $this->_authFailRedir = '';
         $this->desc = get_class($this->_model);
         $this->descPrefix = 'o';
         $this->view_folder = '';
@@ -57,7 +57,7 @@ class CRUDController extends Controller {
             $opt = $_POST;
             unset($opt['_save']);
             $retorno = $this->_model->create($opt);
-            if($retorno == true){
+            if($retorno === true){
                 if($this->_redirect)
                     Router::redirect($this->getPath());
                 return true;

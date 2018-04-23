@@ -15,6 +15,21 @@ function setReporting(){
 }
 
 /**
+ * Replace the last occurrance of the search string with the replacement string
+ * @link https://stackoverflow.com/questions/3835636/php-replace-last-occurrence-of-a-string-in-a-string
+ * @param string $search The value being searched for, otherwise known as the needle.
+ * @param string $replace The replacement value that replaces found search
+ * @param string $subject The string being searched and replaced on, otherwise known as the haystack.
+ * @return string This function returns a string with the replaced values.
+ */
+function str_lreplace($search, $replace, $subject) {
+    $pos = strrpos($subject, $search);
+    if($pos !== false)
+        $subject = substr_replace($subject, $replace, $pos, strlen($search));
+    return $subject;
+}
+
+/**
  * Função para despuração de variáveis
  * @param mixed $var
  */
