@@ -1,0 +1,14 @@
+@mixin mobile {
+  @media screen and (max-width: $break-mobile) {
+    @content;
+  }
+}
+
+@mixin position($position, $top: null, $right: null, $bottom: null, $left: null, $z: null) {
+  position: $position;
+  top: $top;
+  right: if($right, $right, $top);
+  bottom: if($bottom, $bottom, $top);
+  left: if($left, $left, if($right, $right, $top));
+  z-index: $z;
+}

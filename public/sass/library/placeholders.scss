@@ -1,0 +1,27 @@
+%round-input{
+  .input-group{
+    &>*:first-child, &>*:first-child>*{border-top-left-radius: 20px; border-bottom-left-radius: 20px;}
+    &>*:last-child, &>*:last-child>*{border-top-right-radius: 20px; border-bottom-right-radius: 20px;}
+    .input-group-prepend, .input-group-append{
+      margin-bottom: 0;
+    }
+    .input-group-text{
+      height: 100%;
+      background: white;
+    }
+    .input-group-prepend + .form-control{ border-left: none;}
+    .input-group-append + .form-control{ border-right: none;}
+    .input-group-prepend .input-group-text{ border-right: none; }
+    .input-group-append .input-group-text{ border-left: none; }
+  }
+}
+
+%square{
+  width: 100%;
+  height: auto;
+  &:before {
+    content: "";
+    display: block;
+    padding-top: 100%;
+  }
+}

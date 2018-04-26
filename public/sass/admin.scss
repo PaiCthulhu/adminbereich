@@ -1,5 +1,12 @@
 @charset "UTF-8";
 
+$main-color: #f96868;
+$side-color: #3f4a59;
+$break-mobile: 768px;
+
+@import "library/placeholders";
+@import "library/mixins";
+
 html{
   position: absolute;
   top:0;
@@ -15,13 +22,15 @@ body, html>body{
 
 #login .card .card-header{
   margin: 0 -15px;
-  padding: 12px 35px
+  padding: 12px 35px;
+
+  h1{
+    font-size: 1.82rem;
+    padding-top: 8px;
+  }
 }
 
-#login .card .card-header h1{
-  font-size: 1.82rem;
-  padding-top: 8px;
-}
+
 
 .container.full-size, .row.full-size{
   width: 100%;
@@ -34,41 +43,42 @@ section.main{
   right: 30px;
   top: 94px;
   bottom: 30px;
-}
 
-section.main .card{
-  padding: 20px;
-  display: inline-block;
-}
-section.main .card.full{
-  display: block;
-  margin-bottom: 30px;
-}
-section.main .card>.card-header{
-  padding: 0 15px 0 15px;
-  margin: -5px -15px 0 -15px;
-  background-color: white;
-}
-section.main .card>.card-header>.card-title{
-  display: inline-block;
-  margin-bottom: 15px;
-}
+  .card{
+    padding: 20px;
+    display: inline-block;
+    &>.card-header{
+      padding: 0 15px 0 15px;
+      margin: -5px -15px 0 -15px;
+      background-color: white;
+      &>.card-title{
+        display: inline-block;
+        margin-bottom: 15px;
+      }
+    }
+  }
 
-section.main table.table-view{
-  width: calc(100% + 30px);
-  display: table;
-  margin: -15px;
-}
+  .card.full{
+    display: block;
+    margin-bottom: 30px;
+  }
 
-section.main table.table-view td{    padding: 12px;}
-section.main table.table-view tbody td{
-  border-top: 1px solid #dee2e6;
-}
+  table.table-view{
+    width: calc(100% + 30px);
+    display: table;
+    margin: -15px;
 
-section.main table.table-view .row-controls .btn-sm{
-  width: 32px;
-  height: 32px;
-  text-align: center;
+    td{    padding: 12px;}
+    tbody td{
+      border-top: 1px solid #dee2e6;
+    }
+
+    .row-controls .btn-sm{
+      width: 32px;
+      height: 32px;
+      text-align: center;
+    }
+  }
 }
 
 .avatar img{
@@ -83,44 +93,46 @@ header#topbar{
   left: 0;
   right: 0;
   z-index: 99;
-}
-header#topbar .sidebar-header{
-  width: 260px;
-  height: 64px;
-  background-color: #f96868;
-  position: absolute;
-  display: flex;
-  align-content: center;
-  padding: 0 12px;
-}
-header#topbar>.sidebar-header>.logo{
-  width: 100px;
-  height: 30px;
-  background-image: url('../img/logo.png');
-  background-size: contain;
-  background-repeat: no-repeat;
-  align-self: center;
-  flex-grow: 1;
+
+  .sidebar-header{
+    width: 260px;
+    height: 64px;
+    background-color: $main-color;
+    position: absolute;
+    display: flex;
+    align-content: center;
+    padding: 0 12px;
+
+    &>.logo{
+      width: 100px;
+      height: 30px;
+      background-image: url('../img/logo.png');
+      background-size: contain;
+      background-repeat: no-repeat;
+      align-self: center;
+      flex-grow: 1;
+    }
+    &>.menu{
+      color: #fff;
+      align-self: center;
+      padding: 0 12px;
+    }
+  }
+
+  &>.view-site{
+    height: 64px;
+    display: flex;
+    padding: 0 12px;
+    float: right;
+    background-color: $side-color;
+    &>a{
+      padding: 0 12px;
+      align-self: center;
+      color: white;
+    }
+  }
 }
 
-header#topbar>.sidebar-header>.menu{
-  color: #fff;
-  align-self: center;
-  padding: 0 12px;
-}
-
-header#topbar>.view-site{
-  height: 64px;
-  display: flex;
-  padding: 0 12px;
-  float: right;
-  background-color: #3f4a59;
-}
-header#topbar>.view-site>a{
-  padding: 0 12px;
-  align-self: center;
-  color: white;
-}
 
 /** -- Sidebar -- **/
 aside#sidebar{
@@ -129,44 +141,51 @@ aside#sidebar{
   bottom: 0;
   width: 260px;
 
-  background-color: #3f4a59;
+  background-color: $side-color;
   color: #fff;
+
+  a { color: white; }
+  hr{ border-color: white;}
+
+  &>nav>ul{
+    padding: 0;
+    list-style: none;
+  }
+
+  a.menu-opt{
+    &:hover{
+      background-color: rgba(0,0,0,0.1);
+      text-decoration: none;
+      transition: 0.2s linear;
+    }
+    &.active{
+      color: $main-color;
+      background-color: rgba(0,0,0,0.1);
+    }
+
+    i{
+      margin-right: 5px;
+    }
+  }
 }
-#sidebar>nav>ul{
-  padding: 0;
-  list-style: none;
-}
-#sidebar a { color: white; }
-#sidebar hr{ border-color: white;}
+
 a.menu-opt{
   display: block;
   height: 56px;
   padding: 0 12px;
   line-height: 56px;
 }
-#sidebar a.menu-opt:hover{
-  background-color: rgba(0,0,0,0.1);
-  text-decoration: none;
-  transition: 0.2s linear;
-}
-#sidebar a.menu-opt.active{
-  color: #f96868;
-  background-color: rgba(0,0,0,0.1);
-}
-#sidebar a.menu-opt i{
-  margin-right: 5px;
-}
 
 .menu-cat{
   height: 28px;
   border-bottom: 1px dashed white;
   margin-bottom: 28px;
-}
-.menu-cat::before{
-  content: attr(data-title);
-  display: inline-block;
-  padding: 14px 24px 14px 12px;
-  background-color: #3f4a59;
+  &::before{
+    content: attr(data-title);
+    display: inline-block;
+    padding: 14px 24px 14px 12px;
+    background-color: $side-color;
+  }
 }
 
 /** -- Seções -- **/

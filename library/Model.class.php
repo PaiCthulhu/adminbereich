@@ -84,7 +84,7 @@ class Model{
 
     /**
      * @param int $id
-     * @return bool|static
+     * @return static|bool
      */
     static function load($id){
         $n = new static();
@@ -121,8 +121,9 @@ class Model{
      * @param string $relTable
      * @param string $fk1
      * @param string $fk2
+     * @return Model
      */
-    function relMulti($relClass, $relTable = '', $fk = '', $pk = ''){
+    function relSingle($relClass, $relTable = '', $fk = '', $pk = ''){
         if(is_string($relClass))
             $relClass = new $relClass();
         $relTable = $relTable ?: $this->_table.'_'.$relClass->_table;
@@ -131,6 +132,21 @@ class Model{
         $q = "SELECT {$fk} FROM {$relTable} WHERE {$pk} = ".$this->{$this->_pk};
         $r = $this->db->fetch($q)[0];
         return $relClass::load($r->{$relClass->_pk});
+    }
+
+    function relMultiList($relClass, $relTable = '', $fk = '', $pk = ''){
+        $return = [];
+        if(is_string($relClass))
+            $relClass = new $relClass();
+        $relTable = $relTable ?: $this->_table.'_'.$relClass->_table;
+        $pk = $pk ?: $this->_pk;
+        $fk = $fk ?: $relClass->_pk;
+        $q = new Query();
+        $list = $this->db->fetch($q->select([$fk])->from($relTable)->where([$pk=>($this->{$this->_pk})]));
+        if($list !== false)
+            foreach ($list as $item)
+                $return[] = $item->{$fk};
+        return $return;
     }
 
     /**
@@ -169,7 +185,7 @@ class Model{
      * @param string|Model $dest
      * @return Model
      */
-    private function cast($source, $dest){
+    protected function cast($source, $dest){
         if(is_string($dest))
             $dest = new $dest();
         foreach (get_object_vars($source) as $prop=>$val){
