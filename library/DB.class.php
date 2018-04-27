@@ -31,7 +31,7 @@ class DB {
 
     /**
      * Resolve uma query SQL
-     * @param $query
+     * @param string $query
      * @return PDOStatement|array Retorna o objeto PDOStatement resultado da query ou então um array com código e mensagem de erro
      */
     function query($query){
@@ -43,11 +43,12 @@ class DB {
     }
 
     /**
-     * @param $query
-     * @param int $mode
+     * @param string $query Uma query do SQL
+     * @param int $mode Modo de fetch do PDO, principais valores são: PDO::FETCH_OBJ, PDO::FETCH_CLASS e PDO::FETCH_ARRAY
+     * @param mixed $arg Argumento para a função PDO::fetchAll()
      * @return array|bool
      */
-    function fetch($query, $mode = PDO::FETCH_OBJ){
+    function fetch($query, $mode = PDO::FETCH_OBJ, $arg = null){
         $q = $this->query($query);
         if(is_array($q)){
             return $this->errorHandler("Erro ao executar SQL", $q, $query);
@@ -55,7 +56,10 @@ class DB {
         else if($q->rowCount() == 0)
             return false;
         else
-            return $q->fetchAll($mode);
+            if(!empty($arg))
+                 return $q->fetchAll($mode, $arg);
+            else
+                return $q->fetchAll($mode);
     }
 
     /**
@@ -94,18 +98,19 @@ class DB {
         return $this->fetch($q);
     }
 
-    function selectAll($table, $mode = PDO::FETCH_OBJ){
+    function selectAll($table, $mode = PDO::FETCH_OBJ, $classname = null){
         $q = new Query();
-        return $this->fetch($q->select()->from($table), $mode);
+        return $this->fetch($q->select()->from($table), $mode, $classname);
     }
 
     /**
      * @param $table
      * @param $id
      * @param int $mode
+     * @param string|null $classname Nome da classe a ser instanciada, caso $mode seja PDO::FETCH_CLASS
      * @return bool|array|stdClass
      */
-    function selectSingle($table, $id, $mode = PDO::FETCH_OBJ){
+    function selectSingle($table, $id, $mode = PDO::FETCH_OBJ, $classname = null){
         $q = new Query();
         $k = $this->handle->query($q->showIndex('KEYS')->from($table)->where(['Key_name','PRIMARY']));
         if($k === false){
@@ -118,7 +123,7 @@ class DB {
         $q->execute();
         if($q->rowCount() == 0)
             return false;
-        return $q->fetchAll($mode)[0];
+        return $q->fetchAll($mode, $classname)[0];
     }
 
 
@@ -126,11 +131,12 @@ class DB {
      * @param $table
      * @param $params
      * @param int $mode
+     * @param string|null $classname Nome da classe a ser instanciada, caso $mode seja PDO::FETCH_CLASS
      * @return stdClass|bool
      */
-    function selectSingleByFields($table, $params, $mode = PDO::FETCH_OBJ){
+    function selectSingleByFields($table, $params, $mode = PDO::FETCH_OBJ, $classname = null){
         $q = new Query();
-        $r = $this->fetch($q->select()->from($table)->where($params)->limit(1), $mode);
+        $r = $this->fetch($q->select()->from($table)->where($params)->limit(1), $mode, $classname);
         if(is_array($r))
             return $r[0];
         else
@@ -141,10 +147,11 @@ class DB {
      * @param $table
      * @param $params
      * @param int $mode
+     * @param string|null $classname Nome da classe a ser instanciada, caso $mode seja PDO::FETCH_CLASS
      * @return stdClass|bool
      */
-    function selectAllByFields($table, $params, $mode = PDO::FETCH_OBJ){
-        return $this->fetch((new Query())->select()->from($table)->where($params), $mode);
+    function selectAllByFields($table, $params, $mode = PDO::FETCH_OBJ, $classname = null){
+        return $this->fetch((new Query())->select()->from($table)->where($params), $mode, $classname);
     }
 
     /**

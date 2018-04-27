@@ -88,10 +88,12 @@ class Model{
      */
     static function load($id){
         $n = new static();
-        $l = $n->get($id);
-        if($l === false)
-            return false;
-        return $n->cast($l, $n);
+        return $n->db->selectSingle($n->_table, $id, PDO::FETCH_CLASS, static::class);
+    }
+
+    static function loadAll(){
+        $n = new static();
+        return $n->db->selectAll($n->_table, PDO::FETCH_CLASS, static::class);
     }
 
     function getTable(){

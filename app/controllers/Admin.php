@@ -1,8 +1,7 @@
 <?php
 class Admin extends Controller {
 
-    const DBLESS = true,
-          MENU = [
+    const MENU = [
             ['title'=>'Início', 'page'=>'admin.pages.dashboard','path'=>'admin','icon'=>'home','icon_type'=>'s'],
             ['title'=>'Banners', 'page'=>'admin.pages.banners','path'=>'admin','icon'=>'images','icon_type'=>'r'],
             ['title'=>'Publicações', 'page'=>'admin.pages.posts','path'=>'admin','icon'=>'newspaper','icon_type'=>'r'],
@@ -23,10 +22,7 @@ class Admin extends Controller {
     }
 
     function logar(){
-        if(Auth::login($_POST['user'], $_POST['pswd'], 'Usuario')){
-            $this->index();
-        }
-        else{
+        if(!Auth::login($_POST['user'], $_POST['pswd'], 'Usuario')){
             Session::set('login_error', 'Login Inválido');
         }
         Router::redirect('admin/');
