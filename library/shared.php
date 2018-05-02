@@ -1,6 +1,34 @@
 <?php
 date_default_timezone_set('America/Sao_Paulo');
 
+/**
+ * @param string $class Nome da Classe
+ * @throws Exception Caso não encontre a classe, gera uma exceção
+ */
+spl_autoload_register(function ($class) {
+    if (file_exists(ROOT . DS . 'library' . DS . $class . '.class.php')) {
+        require_once(ROOT . DS . 'library' . DS . $class . '.class.php');
+    }
+    else if (file_exists(ROOT . DS . 'app' . DS . 'controllers' . DS . ucfirst($class) . '.php')) {
+        require_once(ROOT . DS . 'app' . DS . 'controllers' . DS . ucfirst($class) . '.php');
+    }
+    else if (file_exists(ROOT . DS . 'app' . DS . 'models' . DS . $class . '.php')) {
+        require_once(ROOT . DS . 'app' . DS . 'models' . DS . $class . '.php');
+    }
+    else if (file_exists(ROOT . DS . 'app' . DS . 'library' . DS . $class . '.php')) {
+        require_once(ROOT . DS . 'app' . DS . 'library' . DS . $class . '.php');
+    }
+    else if (file_exists(ROOT . DS . 'app' . DS . 'library' . DS . $class . '.class.php')) {
+        require_once(ROOT . DS . 'app' . DS . 'library' . DS . $class . '.class.php');
+    }
+    else if(file_exists(ROOT.DS.'vendor'.DS.$class.DS.$class.'.php')){
+        require_once(ROOT.DS.'vendor'.DS.$class.DS.$class.'.php');
+    }
+    else {
+        throw new Exception('Classe "'.$class.'" não encontrada!');
+    }
+});
+
 function setReporting(){
     if(DEBUG == true){
         error_reporting(E_ALL);
@@ -42,34 +70,6 @@ function dump($var){
     else
         var_dump($var);
 }
-
-/**
- * @param string $class Nome da Classe
- * @throws Exception Caso não encontre a classe, gera uma exceção
- */
-spl_autoload_register(function ($class) {
-    if (file_exists(ROOT . DS . 'library' . DS . $class . '.class.php')) {
-        require_once(ROOT . DS . 'library' . DS . $class . '.class.php');
-    }
-    else if (file_exists(ROOT . DS . 'app' . DS . 'controllers' . DS . ucfirst($class) . '.php')) {
-        require_once(ROOT . DS . 'app' . DS . 'controllers' . DS . ucfirst($class) . '.php');
-    }
-    else if (file_exists(ROOT . DS . 'app' . DS . 'models' . DS . $class . '.php')) {
-        require_once(ROOT . DS . 'app' . DS . 'models' . DS . $class . '.php');
-    }
-    else if (file_exists(ROOT . DS . 'app' . DS . 'library' . DS . $class . '.php')) {
-        require_once(ROOT . DS . 'app' . DS . 'library' . DS . $class . '.php');
-    }
-    else if (file_exists(ROOT . DS . 'app' . DS . 'library' . DS . $class . '.class.php')) {
-        require_once(ROOT . DS . 'app' . DS . 'library' . DS . $class . '.class.php');
-    }
-    else if(file_exists(ROOT.DS.'vendor'.DS.$class.DS.$class.'.php')){
-        require_once(ROOT.DS.'vendor'.DS.$class.DS.$class.'.php');
-    }
-    else {
-        throw new Exception('Classe "'.$class.'" não encontrada!');
-    }
-});
 
 function exception_handler($exception) {
     $c = MAIN_CLASS;

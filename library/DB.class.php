@@ -1,6 +1,10 @@
 <?php
 class DB {
     /**
+     * @var DB $db Singleton
+     */
+    public static $db;
+    /**
      * @var PDO $handle Conexão com o banco de dados
      */
     protected $handle;
@@ -12,7 +16,7 @@ class DB {
      * @param string $pswd
      * @param string $db
      */
-    function __construct($host, $user, $pswd, $db){
+    private function __construct($host, $user, $pswd, $db){
         $dsn = "mysql:host={$host};dbname={$db};charset=UTF8";
         try{
             $this->handle = new PDO($dsn, $user, $pswd);
@@ -28,6 +32,18 @@ class DB {
     function __destruct(){
         $this->handle = null;
     }
+
+    private function __clone(){ }
+    private function __wakeup(){ }
+
+    public static function connection(){
+        if(!isset(self::$db))
+            self::$db = new self(DB_HOST, DB_USER, DB_PSWD, DB_NAME);
+
+        return self::$db;
+    }
+
+
 
     /**
      * Resolve uma query SQL

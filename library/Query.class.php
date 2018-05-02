@@ -176,9 +176,14 @@ class Query{
         if(is_array($field)){
             foreach ($field as $k=>$row){
                 if(is_array($row))
-                    $q .= "`{$row[0]}` {$row[1]}";
+                    list($f,$m) = [$row[0],$row[1]];
                 else
-                    $q .= "`{$row}` {$ord}";
+                    list($f,$m) = [$row,$ord];
+                if(substr($f, 0, 1) === '-'){
+                    $f = ltrim($f, '-');
+                    $q .= '-';
+                }
+                $q .= "`{$f}` {$m}";
                 $q.= ($k !== $this->arrayLastKey($field))?", ":" ";
             }
         }

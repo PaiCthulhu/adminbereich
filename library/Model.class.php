@@ -4,7 +4,7 @@ class Model{
     protected $db, $_table, $_pk, $_columns;
 
     function __construct(){
-        $this->db = new DB(DB_HOST, DB_USER, DB_PSWD, DB_NAME);
+        $this->db = DB::connection();
         $this->_table = strtolower(get_class($this));
         $this->_pk = sprintf(DB_PK_FORMAT, $this->_table);
         $this->created = date('Y-m-d G:i:s');
@@ -32,6 +32,12 @@ class Model{
 
     function findAll($params){
         return $this->db->selectAllByFields($this->_table, $params);
+    }
+
+    function findAllOrderBy($params, $orderField, $desc = false){
+        $q = new Query();
+        $mode = ($desc)? 'DESC':'ASC';
+        return $this->db->fetch($q->select()->from($this->_table)->where($params)->orderBy($orderField, $mode));
     }
 
     /**
