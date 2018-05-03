@@ -1,5 +1,7 @@
 <?php
 
+namespace AdmBereich;
+
 class Query{
 
     /**

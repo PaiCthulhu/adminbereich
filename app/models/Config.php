@@ -1,6 +1,6 @@
 <?php
-
-class Config extends Model {
+namespace abApp;
+class Config extends \AdmBereich\Model {
 
     function __construct(){
         parent::__construct();

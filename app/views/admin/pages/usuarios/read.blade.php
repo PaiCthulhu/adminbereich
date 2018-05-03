@@ -5,7 +5,7 @@
         <div class="card full">
             <div class="card-header">
                 <h5 class="card-title">@include('default.icon',['i'=>'users','t'=>'s']) &nbsp;Usuários</h5>
-                @if (Auth::hasPerm('users_add'))
+                @if (\AdmBereich\Auth::hasPerm('users_add'))
                     <a href="{{PATH.DS.'admin'.DS.'usuarios'.DS.'add'}}" class="btn btn-sm btn-secondary float-right">&plus; Novo</a>
                 @endif
             </div>

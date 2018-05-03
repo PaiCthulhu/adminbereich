@@ -19,7 +19,7 @@
 
 @if($_page != 'admin.login')
 <aside id="sidebar">
-    @php $menu = Admin::MENU @endphp
+    @php $menu = \abApp\Admin::MENU @endphp
     @include('admin.components.sidebar', ['options'=>$menu])
 </aside>
 @endif

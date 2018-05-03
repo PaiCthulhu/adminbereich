@@ -1,5 +1,6 @@
 <?php
-$routes = new Router();
+$routes = new \AdmBereich\Router();
+$routes->namespace = DEFAULT_NAMESPACE;
 
 $routes->get('', 'Site/home');
 $routes->get('admin', 'Admin/index');

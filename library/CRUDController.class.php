@@ -1,5 +1,7 @@
 <?php
 
+namespace AdmBereich;
+
 class CRUDController extends Controller {
     /**
      * @var Model $_model
@@ -17,15 +19,15 @@ class CRUDController extends Controller {
         if(!isset($this->_model) && class_exists($singular))
             $this->_model = new $singular();
         $this->_redirect = true;
-        $this->_authPrefix = strtolower(get_class($this->_model)).'s';
+        $this->_authPrefix = strtolower(static::name());
         $this->_authFailRedir = '';
-        $this->desc = get_class($this->_model);
+        $this->desc = $this->_model::name();
         $this->descPrefix = 'o';
         $this->view_folder = '';
     }
 
     /**
-     * @throws Exception
+     * @throws \Exception
      */
     function add(){
         $this->authCheck('add');
@@ -34,7 +36,7 @@ class CRUDController extends Controller {
 
     /**
      * @param $id
-     * @throws Exception
+     * @throws \Exception
      */
     function edit($id){
         $this->authCheck('edit');
@@ -44,11 +46,15 @@ class CRUDController extends Controller {
         $model = new $this->_model();
         $edit = $model::load($id);
         if($edit === false)
-            throw new Exception(strtoupper($this->descPrefix)." {$this->desc} id #{$id} não existe ou não foi encontrad{$this->descPrefix}");
+            throw new \Exception(strtoupper($this->descPrefix)." {$this->desc} id #{$id} não existe ou não foi encontrad{$this->descPrefix}");
         else
-            static::render($this->getView('edit'), [strtolower(get_class($this->_model))=>$edit]);
+            static::render($this->getView('edit'), [strtolower($this->_model::name())=>$edit]);
     }
 
+    /**
+     * @return bool
+     * @throws \Exception
+     */
     function save(){
         $this->authCheck('add');
         if(!isset($this->_model))
@@ -76,7 +82,7 @@ class CRUDController extends Controller {
 
     /**
      * @return bool
-     * @throws Exception
+     * @throws \Exception
      */
     function update(){
         $this->authCheck('edit');
@@ -109,6 +115,11 @@ class CRUDController extends Controller {
         return false;
     }
 
+    /**
+     * @param int $id
+     * @return bool
+     * @throws \Exception
+     */
     function delete($id){
         $this->authCheck('delete');
         if(!isset($this->_model))
@@ -128,7 +139,7 @@ class CRUDController extends Controller {
 
     function getView($mode){
         $folder = (!empty($this->view_folder))? $this->view_folder.'.':'';
-        return $folder."pages.".strtolower(get_class($this->_model))."s.{$mode}";
+        return $folder."pages.".strtolower(static::name()).".{$mode}";
     }
 
     function getSingular($string){

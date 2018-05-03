@@ -1,11 +1,13 @@
 <?php
+namespace AdmBereich;
+
 class Model{
     public $created, $updated;
     protected $db, $_table, $_pk, $_columns;
 
     function __construct(){
         $this->db = DB::connection();
-        $this->_table = strtolower(get_class($this));
+        $this->_table = strtolower(static::name());
         $this->_pk = sprintf(DB_PK_FORMAT, $this->_table);
         $this->created = date('Y-m-d G:i:s');
     }
@@ -59,7 +61,7 @@ class Model{
 
     /**
      * @param $id
-     * @return array|PDOStatement
+     * @return array|\PDOStatement
      */
     function delete($id){
         return $this->db->delete($this->_table, [$this->_pk=>$id]);
@@ -68,7 +70,7 @@ class Model{
     /**
      * @todo Explicar melhor isso aqui
      * @return array|bool
-     * @throws Exception
+     * @throws \Exception
      */
     function save(){
         $this->_loadColumns();
@@ -94,12 +96,12 @@ class Model{
      */
     static function load($id){
         $n = new static();
-        return $n->db->selectSingle($n->_table, $id, PDO::FETCH_CLASS, static::class);
+        return $n->db->selectSingle($n->_table, $id, \PDO::FETCH_CLASS, static::class);
     }
 
     static function loadAll(){
         $n = new static();
-        return $n->db->selectAll($n->_table, PDO::FETCH_CLASS, static::class);
+        return $n->db->selectAll($n->_table, \PDO::FETCH_CLASS, static::class);
     }
 
     function getTable(){
@@ -115,20 +117,20 @@ class Model{
     }
 
     /**
-     * @throws Exception
+     * @throws \Exception
      */
     function _loadColumns(){
         $c = $this->db->selectColumns($this->_table);
         if($c === false)
-            throw new Exception('Erro ao carregar colunas do banco de dados');
+            throw new \Exception('Erro ao carregar colunas do banco de dados');
         $this->_columns = $c;
     }
 
     /**
      * @param string|Model $relClass
      * @param string $relTable
-     * @param string $fk1
-     * @param string $fk2
+     * @param string $fk
+     * @param string $pk
      * @return Model
      */
     function relSingle($relClass, $relTable = '', $fk = '', $pk = ''){
@@ -189,7 +191,7 @@ class Model{
     }
 
     /**
-     * @param stdClass $source
+     * @param \stdClass $source
      * @param string|Model $dest
      * @return Model
      */
@@ -210,6 +212,12 @@ class Model{
         return number_format($number, $decimals, ',', '.');
     }
 
+    /**
+     * @param \stdClass $column
+     * @param mixed $value
+     * @return mixed
+     * @throws \Exception
+     */
     private function columnCheck($column, $value = null){
         //Check Null
         if($value === null && $column->cannull == 'NO')
@@ -218,16 +226,16 @@ class Model{
             else if($column->default == 'CURRENT_TIMESTAMP')
                 return $this->created;
             else
-                throw new Exception("Coluna '{$column->name}' não pode ter um valor nulo");
+                throw new \Exception("Coluna '{$column->name}' não pode ter um valor nulo");
 
         //Check int
         if($column->type == 'int' && !is_int($value))
             if(is_string($value) && ctype_digit($value))
-                return $value+0;
+                return (int) $value+0;
             else if($column->cannull == 'YES' AND $value === null)
                 return null;
             else
-                throw new Exception("Coluna '{$column->name}' requer um valor inteiro, ".Dict::translate(gettype($value))." recebido...");
+                throw new \Exception("Coluna '{$column->name}' requer um valor inteiro, ".Dict::translate(gettype($value))." recebido...");
 
         //Check String
         if($column->type == 'varchar'){
@@ -236,14 +244,19 @@ class Model{
                 if(is_object($value) && method_exists($value,'__toString'))
                     $value = $value->__toString();
                 else
-                    throw new Exception("Coluna '{$column->name}' requer um valor de texto, ".Dict::translate(gettype($value))." recebido...");
+                    throw new \Exception("Coluna '{$column->name}' requer um valor de texto, ".Dict::translate(gettype($value))." recebido...");
             //tamanho
             if(strlen($value) > $column->length)
-                throw new Exception("O valor recebido (".strlen($value)." caracteres) ultrapassa o limite de tamanho da coluna '{$column->name}' que é de {$column->length}.");
+                throw new \Exception("O valor recebido (".strlen($value)." caracteres) ultrapassa o limite de tamanho da coluna '{$column->name}' que é de {$column->length}.");
 
         }
 
         return $value;
+    }
+
+
+    static function name(){
+        return (new \ReflectionClass(get_called_class()))->getShortName();
     }
 
 }

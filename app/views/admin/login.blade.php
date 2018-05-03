@@ -9,9 +9,9 @@
                         <h1>@include('default.icon', ['i'=>"sign-in-alt",'t'=>"s"]) Área Administrativa</h1>
                     </div>
                     <div class="card-body">
-                        @if (Session::has('login_error'))
+                        @if (\AdmBereich\Session::has('login_error'))
                             <div class="alert alert-danger" role="alert">
-                                {{Session::get('login_error')}}
+                                {{\AdmBereich\Session::get('login_error')}}
                                 <button type="button" class="close" data-dismiss="alert" aria-label="Fechar">
                                     <span aria-hidden="true">&times;</span>
                                 </button>

@@ -1,13 +1,15 @@
 <?php
 
-define('DEBUG', true);
-define("BLADEONE_MODE",1);
+const DEBUG =  true;
+const BLADEONE_MODE = 1;
 
-define('MAIN_CLASS','Site');
-define('USER_CLASS','Usuarios');
+const DEFAULT_NAMESPACE = 'abApp';
+const DEFAULT_LIBRARIES = [];
+const MAIN_CLASS ='Main';
+const USER_CLASS ='User';
 
-define('DB_NAME', 'admdb');
-define('DB_USER', 'root');
-define('DB_PSWD', '');
-define('DB_HOST', 'localhost');
-define('DB_PK_FORMAT', 'id_%s');
+const DB_NAME = 'admdb';
+const DB_USER = 'root';
+const DB_PSWD = '';
+const DB_HOST = 'localhost';
+const DB_PK_FORMAT = 'id_%s';

@@ -1,9 +1,11 @@
 <?php
+namespace AdmBereich;
+
 class Session {
 
     static function start(){
         if (session_status() == PHP_SESSION_NONE) {
-            session_start();
+            @session_start();
         }
     }
 

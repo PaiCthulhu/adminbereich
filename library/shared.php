@@ -3,29 +3,65 @@ date_default_timezone_set('America/Sao_Paulo');
 
 /**
  * @param string $class Nome da Classe
- * @throws Exception Caso não encontre a classe, gera uma exceção
+ * @throws \Exception Caso não encontre a classe, gera uma exceção
  */
-spl_autoload_register(function ($class) {
-    if (file_exists(ROOT . DS . 'library' . DS . $class . '.class.php')) {
-        require_once(ROOT . DS . 'library' . DS . $class . '.class.php');
+spl_autoload_register(function ($className) {
+    $className = ltrim($className, '\\');
+    $fileName  = '';
+    $namespace = '';
+    if ($lastNsPos = strrpos($className, '\\')) {
+        $namespace = substr($className, 0, $lastNsPos);
+        $className = substr($className, $lastNsPos + 1);
+        $fileName  = str_replace('\\', DS, $namespace) . DS;
     }
-    else if (file_exists(ROOT . DS . 'app' . DS . 'controllers' . DS . ucfirst($class) . '.php')) {
-        require_once(ROOT . DS . 'app' . DS . 'controllers' . DS . ucfirst($class) . '.php');
+    $fileName .= str_replace('_', DS, $className) . '.php';
+
+    $folder = ROOT.DS;
+    if($namespace == 'AdmBereich'){
+        $folder .= 'library';
+        $file = str_replace('_', DS, $className) . '.trait.php';
+        if (file_exists($folder.DS.$file))
+            $fileName = $file;
+        $file = str_replace('_', DS, $className) . '.class.php';
+        if (file_exists($folder.DS.$file))
+            $fileName = $file;
     }
-    else if (file_exists(ROOT . DS . 'app' . DS . 'models' . DS . $class . '.php')) {
-        require_once(ROOT . DS . 'app' . DS . 'models' . DS . $class . '.php');
+    else if($namespace == DEFAULT_NAMESPACE || in_array($namespace, DEFAULT_LIBRARIES)){
+        $file = str_replace('_', DS, $className) . '.php';
+        if (file_exists(ROOT . DS . 'app/controllers/'.$file)){
+            $fileName = $file;
+            $folder .= 'app/controllers';
+        }
+        else if (file_exists(ROOT . DS . 'app/models/'.$file)){
+            $fileName = $file;
+            $folder .= 'app/models';
+        }
+        else{
+            $folder .= 'app/library';
+            //Check Trait
+            $file = str_replace('.php', '.trait.php', $fileName);
+            if (file_exists($folder.DS.$file))
+                $fileName = $file;
+            //Check Abstract
+            $file = str_replace('.php', '.class.php', $fileName);
+            if (file_exists($folder.DS.$file))
+                $fileName = $file;
+        }
     }
-    else if (file_exists(ROOT . DS . 'app' . DS . 'library' . DS . $class . '.php')) {
-        require_once(ROOT . DS . 'app' . DS . 'library' . DS . $class . '.php');
-    }
-    else if (file_exists(ROOT . DS . 'app' . DS . 'library' . DS . $class . '.class.php')) {
-        require_once(ROOT . DS . 'app' . DS . 'library' . DS . $class . '.class.php');
-    }
-    else if(file_exists(ROOT.DS.'vendor'.DS.$class.DS.$class.'.php')){
-        require_once(ROOT.DS.'vendor'.DS.$class.DS.$class.'.php');
-    }
+    else
+        if($namespace == '')
+            $folder .= 'vendor'.DS.$className;
+    else
+        $folder .= 'vendor';
+
+    if (file_exists($folder.DS.$fileName))
+        require_once($folder.DS.$fileName);
     else {
-        throw new Exception('Classe "'.$class.'" não encontrada!');
+        dump([$className, $namespace, $fileName]);
+        echo "<h2>Falha ao carregar a classe \"{$className}\": Arquivo {$folder}/{$fileName} não encontrado</h2>";
+        echo "<pre>";
+        debug_print_backtrace();
+        echo "</pre>";
     }
 });
 
@@ -71,13 +107,12 @@ function dump($var){
         var_dump($var);
 }
 
-function exception_handler($exception) {
-    $c = MAIN_CLASS;
+
+set_exception_handler(function ($exception) {
+    $c = '\\'.DEFAULT_NAMESPACE.'\\'.MAIN_CLASS;
     $c = new $c();
     $c->_error($exception);
-}
-
-set_exception_handler('exception_handler');
+});
 
 /**------------------------------------------------------------------------------------------------------------------**/
 

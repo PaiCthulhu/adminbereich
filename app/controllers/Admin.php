@@ -1,5 +1,6 @@
 <?php
-class Admin extends Controller {
+namespace abApp;
+class Admin extends \AdmBereich\Controller {
 
     const MENU = [
             ['title'=>'Início', 'page'=>'admin.pages.dashboard','path'=>'admin','icon'=>'home','icon_type'=>'s'],
@@ -17,24 +18,24 @@ class Admin extends Controller {
             parent::render('admin.login');
         else
             parent::render('admin.login', $params);
-        if(Session::has('login_error'))
-            Session::unset('login_error');
+        if(\AdmBereich\Session::has('login_error'))
+            \AdmBereich\Session::unset('login_error');
     }
 
     function logar(){
-        if(!Auth::login($_POST['user'], $_POST['pswd'], 'Usuario')){
-            Session::set('login_error', 'Login Inválido');
+        if(!\AdmBereich\Auth::login($_POST['user'], $_POST['pswd'], 'Usuario')){
+            \AdmBereich\Session::set('login_error', 'Login Inválido');
         }
-        Router::redirect('admin/');
+        \AdmBereich\Router::redirect('admin/');
     }
 
     function sair(){
-        Auth::logout();
-        Router::redirect('admin/');
+        \AdmBereich\Auth::logout();
+        \AdmBereich\Router::redirect('admin/');
     }
 
     function index(){
-        if (!Session::has('id'))
+        if (!\AdmBereich\Session::has('id'))
             $this->login();
         else
             parent::render('admin.pages.dashboard');

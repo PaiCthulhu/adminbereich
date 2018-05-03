@@ -1,5 +1,7 @@
 <?php
 
+namespace AdmBereich;
+
 class Auth {
 
     /**
@@ -9,6 +11,7 @@ class Auth {
      * @return bool
      */
     static function login($user, $pswd, $class = USER_CLASS){
+        $class = '\\'.DEFAULT_NAMESPACE.'\\'.$class;
         $usuario = new $class();
         $u = $usuario->find(['username'=>$user]);
         if($u === false)

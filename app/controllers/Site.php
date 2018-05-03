@@ -1,5 +1,6 @@
 <?php
-class Site extends Controller {
+namespace abApp;
+class Site extends \AdmBereich\Controller {
 
     function home(){
         $config = new Config();

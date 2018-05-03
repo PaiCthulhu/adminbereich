@@ -1,7 +1,13 @@
 <?php
+namespace AdmBereich;
 
 class Router{
     protected $routes;
+    public $namespace;
+
+    function __construct(){
+        $this->namespace = 'AdmBereich';
+    }
 
     /**
      * @param string $url
@@ -16,11 +22,13 @@ class Router{
                 array_shift($params);
         }
 
-        if(class_exists($params[0])){
+        $ex = $this->getNamespace().$params[0];
+
+        if(class_exists($ex)){
             if(!isset($params[1]) || $params[1] == '')
                 $params[1] = 'index';
-            if(method_exists($params[0], $params[1])){
-                $o = new $params[0]();
+            if(method_exists($ex, $params[1])){
+                $o = new $ex();
                 if(isset($params[2])){
                     array_shift($params);
                     $method = array_shift($params);
@@ -29,8 +37,8 @@ class Router{
                 else
                     $o->{$params[1]}();
             }
-            else if(method_exists($params[0], '__default')){
-                $o = array_shift($params);
+            else if(method_exists($ex, '__default')){
+                $o = $this->getNamespace().array_shift($params);
                 $o = new $o();
                 $o->__default(implode('/', $params));
             }
@@ -45,6 +53,10 @@ class Router{
             dump($url);
             dump($_SERVER);
         }
+    }
+
+    function getNamespace(){
+        return '\\'.$this->namespace.'\\';
     }
 
     /**

@@ -1,11 +1,13 @@
 <?php
+namespace AdmBereich;
+
 class DB {
     /**
      * @var DB $db Singleton
      */
     public static $db;
     /**
-     * @var PDO $handle Conexão com o banco de dados
+     * @var \PDO $handle Conexão com o banco de dados
      */
     protected $handle;
 
@@ -19,9 +21,9 @@ class DB {
     private function __construct($host, $user, $pswd, $db){
         $dsn = "mysql:host={$host};dbname={$db};charset=UTF8";
         try{
-            $this->handle = new PDO($dsn, $user, $pswd);
+            $this->handle = new \PDO($dsn, $user, $pswd);
         }
-        catch (PDOException $e){
+        catch (\PDOException $e){
             $this->errorHandler("Falha ao conectar-se ao banco de dados", $e);
         }
     }
@@ -48,7 +50,7 @@ class DB {
     /**
      * Resolve uma query SQL
      * @param string $query
-     * @return PDOStatement|array Retorna o objeto PDOStatement resultado da query ou então um array com código e mensagem de erro
+     * @return \PDOStatement|array Retorna o objeto PDOStatement resultado da query ou então um array com código e mensagem de erro
      */
     function query($query){
         $q = $this->handle->query($query);
@@ -64,7 +66,7 @@ class DB {
      * @param mixed $arg Argumento para a função PDO::fetchAll()
      * @return array|bool
      */
-    function fetch($query, $mode = PDO::FETCH_OBJ, $arg = null){
+    function fetch($query, $mode = \PDO::FETCH_OBJ, $arg = null){
         $q = $this->query($query);
         if(is_array($q)){
             return $this->errorHandler("Erro ao executar SQL", $q, $query);
@@ -114,7 +116,7 @@ class DB {
         return $this->fetch($q);
     }
 
-    function selectAll($table, $mode = PDO::FETCH_OBJ, $classname = null){
+    function selectAll($table, $mode = \PDO::FETCH_OBJ, $classname = null){
         $q = new Query();
         return $this->fetch($q->select()->from($table), $mode, $classname);
     }
@@ -124,18 +126,18 @@ class DB {
      * @param $id
      * @param int $mode
      * @param string|null $classname Nome da classe a ser instanciada, caso $mode seja PDO::FETCH_CLASS
-     * @return bool|array|stdClass
+     * @return bool|array|\stdClass
      */
-    function selectSingle($table, $id, $mode = PDO::FETCH_OBJ, $classname = null){
+    function selectSingle($table, $id, $mode = \PDO::FETCH_OBJ, $classname = null){
         $q = new Query();
         $k = $this->handle->query($q->showIndex('KEYS')->from($table)->where(['Key_name','PRIMARY']));
         if($k === false){
             return $this->errorHandler("Tabela \"{$table}\" não encontrada!", $this->handle->errorInfo());
         }
-        $k = $k->fetchAll(PDO::FETCH_OBJ)[0];
+        $k = $k->fetchAll(\PDO::FETCH_OBJ)[0];
         $q->select()->from($table)->where(["{$table}`.`{$k->Column_name}", ":id"])->limit(1);
         $q = $this->handle->prepare($q);
-        $q->bindParam(':id', $id, PDO::PARAM_INT);
+        $q->bindParam(':id', $id, \PDO::PARAM_INT);
         $q->execute();
         if($q->rowCount() == 0)
             return false;
@@ -148,9 +150,9 @@ class DB {
      * @param $params
      * @param int $mode
      * @param string|null $classname Nome da classe a ser instanciada, caso $mode seja PDO::FETCH_CLASS
-     * @return stdClass|bool
+     * @return \stdClass|bool
      */
-    function selectSingleByFields($table, $params, $mode = PDO::FETCH_OBJ, $classname = null){
+    function selectSingleByFields($table, $params, $mode = \PDO::FETCH_OBJ, $classname = null){
         $q = new Query();
         $r = $this->fetch($q->select()->from($table)->where($params)->limit(1), $mode, $classname);
         if(is_array($r))
@@ -164,9 +166,9 @@ class DB {
      * @param $params
      * @param int $mode
      * @param string|null $classname Nome da classe a ser instanciada, caso $mode seja PDO::FETCH_CLASS
-     * @return stdClass|bool
+     * @return \stdClass|bool
      */
-    function selectAllByFields($table, $params, $mode = PDO::FETCH_OBJ, $classname = null){
+    function selectAllByFields($table, $params, $mode = \PDO::FETCH_OBJ, $classname = null){
         return $this->fetch((new Query())->select()->from($table)->where($params), $mode, $classname);
     }
 
@@ -198,7 +200,7 @@ class DB {
     /**
      * @param string $table Nome da tabela
      * @param array $params Array de parâmetros para a exclusão, baseado na Query::where
-     * @return array|PDOStatement
+     * @return array|\PDOStatement
      */
     function delete($table, $params){
         $q = new Query();
@@ -246,7 +248,7 @@ class DB {
     /**
      * Função para padronizar erros de banco de dados
      * @param string $msg
-     * @param array|PDOException $errorInfo
+     * @param array|\PDOException $errorInfo
      * @param string $query
      * @return bool
      */

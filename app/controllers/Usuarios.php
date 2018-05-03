@@ -1,5 +1,6 @@
 <?php
-class Usuarios extends CRUDController {
+namespace abApp;
+class Usuarios extends \AdmBereich\CRUDController {
 
     const DEFAULT_ROUTE = 'admin/';
 
