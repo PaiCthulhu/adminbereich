@@ -1,0 +1,21 @@
+{
+  "name":"AdminBereich",
+  "description":"Framework leve para uso em sites dinâmicos",
+  "authors":[
+    {
+      "name":"William J. Venancio",
+      "email":"wilmonjv@yahoo.com.br"
+    }
+  ],
+  "require":{
+    "php":">=7.0",
+    "kint-php/kint":"~2.2",
+    "eftec/bladeone":"~2.3",
+    "leafo/scssphp":"~0.7.5"
+  },
+  "extra": {
+    "branch-alias": {
+      "dev-master": "1.6-dev"
+    }
+  }
+}

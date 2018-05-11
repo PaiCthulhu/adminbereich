@@ -110,7 +110,7 @@ class CRUDController extends Controller {
         }
         else{
             dump($_POST);
-            $this->errorHandler("Parâmentros Inválidos: ");
+            $this->errorHandler("Parâmentros Inválidos: Chave de operação não setada");
         }
         return false;
     }

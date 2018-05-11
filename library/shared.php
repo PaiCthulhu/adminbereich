@@ -50,7 +50,8 @@ spl_autoload_register(function ($className) {
     }
     else
         if($namespace == '')
-            $folder .= 'vendor'.DS.$className;
+            $folder .= 'vendor'.DS.strtolower($className);
+
     else
         $folder .= 'vendor';
 

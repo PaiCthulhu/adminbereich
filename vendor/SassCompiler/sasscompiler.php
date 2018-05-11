@@ -1,6 +1,5 @@
 <?php
 
-require_once('scss.inc.php');
 /**
  * Class SassCompiler
  *
@@ -57,7 +56,7 @@ class SassCompiler
         // set css formatting (normal, nested or minimized), @see http://leafo.net/scssphp/docs/#output_formatting
         $scss_compiler->setFormatter($format_style);
 
-        $scss_compiler->setSourceMap(2);  // 0=no .map; 1=inline .map; 2=output .map file
+        $scss_compiler->setSourceMap(\Leafo\ScssPhp\Compiler::SOURCE_MAP_FILE);
 
         // step through all .scss files in that folder
         foreach ($filelist as $file_path) {
@@ -73,7 +72,7 @@ class SassCompiler
                 'sourceMapWriteTo'  => ROOT.'/public/css/' . $file . ".map",
                 'sourceMapURL'      => PATH.'/public/css/' . $file . ".map",
                 'sourceMapFilename' => PATH.'/public/css/'.$file,  // url location of .css file
-                'sourceMapBasepath' => '',  // difference between file & url locations, removed from ALL source files in .map
+                'sourceMapBasepath' => PATH,  // difference between file & url locations, removed from ALL source files in .map
                 'sourceRoot'        => PATH.'/public/sass/',
             ));
 

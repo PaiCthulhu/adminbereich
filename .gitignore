@@ -1,5 +1,6 @@
 
 \.idea/
 \tmp/cache/*
-\vendor/BladeOne/docs/
+\vendor/*
 desktop\.ini
+composer.phar

@@ -12,6 +12,18 @@ class Model{
         $this->created = date('Y-m-d G:i:s');
     }
 
+    function getTable(){
+        return $this->_table;
+    }
+
+    function pk(){
+        return $this->_pk;
+    }
+
+    function lastId(){
+        return $this->db->lastId();
+    }
+
     function all(){
         return $this->db->selectAll($this->_table);
     }
@@ -56,7 +68,7 @@ class Model{
      * @return array|bool Retorna TRUE caso suceda, do contrário, um array com o erro
      */
     function update($id, $params){
-        return $this->db->update($this->_table, $params, $id);
+        return $this->db->update($this->_table, $params, [$this->_pk=>$id]);
     }
 
     /**
@@ -102,18 +114,6 @@ class Model{
     static function loadAll(){
         $n = new static();
         return $n->db->selectAll($n->_table, \PDO::FETCH_CLASS, static::class);
-    }
-
-    function getTable(){
-        return $this->_table;
-    }
-
-    function pk(){
-        return $this->_pk;
-    }
-
-    function lastId(){
-        return $this->db->lastId();
     }
 
     /**
@@ -204,13 +204,6 @@ class Model{
         return $dest;
     }
 
-    /**
-     * @param float $number
-     * @return string
-     */
-    static function numberFormat($number, $decimals = 0){
-        return number_format($number, $decimals, ',', '.');
-    }
 
     /**
      * @param \stdClass $column
@@ -254,6 +247,13 @@ class Model{
         return $value;
     }
 
+    /**
+     * @param float $number
+     * @return string
+     */
+    static function numberFormat($number, $decimals = 0){
+        return number_format($number, $decimals, ',', '.');
+    }
 
     static function name(){
         return (new \ReflectionClass(get_called_class()))->getShortName();
