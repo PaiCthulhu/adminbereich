@@ -16,7 +16,6 @@ class Session {
         return ($this->user !== false);
     }*/
 
-
     static function set($index, $val){
         Session::start();
         $_SESSION[$index] = $val;

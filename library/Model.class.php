@@ -191,6 +191,14 @@ class Model{
     }
 
     /**
+     * @param string $q
+     * @return array|bool
+     */
+    function run($q){
+        return $this->db->fetch($q);
+    }
+
+    /**
      * @param \stdClass $source
      * @param string|Model $dest
      * @return Model
