@@ -5,6 +5,10 @@ class Model{
     public $created, $updated;
     protected $db, $_table, $_pk, $_columns;
 
+    /**
+     * Model constructor.
+     * @throws \ReflectionException
+     */
     function __construct(){
         $this->db = DB::connection();
         $this->_table = strtolower(static::name());
@@ -105,12 +109,17 @@ class Model{
     /**
      * @param int $id
      * @return static|bool
+     * @throws \ReflectionException
      */
     static function load($id){
         $n = new static();
         return $n->db->selectSingle($n->_table, $id, \PDO::FETCH_CLASS, static::class);
     }
 
+    /**
+     * @return array|bool
+     * @throws \ReflectionException
+     */
     static function loadAll(){
         $n = new static();
         return $n->db->selectAll($n->_table, \PDO::FETCH_CLASS, static::class);
@@ -132,6 +141,7 @@ class Model{
      * @param string $fk
      * @param string $pk
      * @return Model
+     * @throws \ReflectionException
      */
     function relSingle($relClass, $relTable = '', $fk = '', $pk = ''){
         if(is_string($relClass))
@@ -263,6 +273,10 @@ class Model{
         return number_format($number, $decimals, ',', '.');
     }
 
+    /**
+     * @return string
+     * @throws \ReflectionException
+     */
     static function name(){
         return (new \ReflectionClass(get_called_class()))->getShortName();
     }

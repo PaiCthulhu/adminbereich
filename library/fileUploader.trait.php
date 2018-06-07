@@ -24,6 +24,14 @@ trait fileUploader{
      * @param string $path
      * @return string
      */
+    static function getFileName($path){
+        return pathinfo($path, PATHINFO_FILENAME);
+    }
+
+    /**
+     * @param string $path
+     * @return string
+     */
     static function getFileExtension($path){
         return pathinfo($path, PATHINFO_EXTENSION);
     }

@@ -251,7 +251,7 @@ class Query{
         else if(is_bool($val))
             return ($val)?'TRUE':'FALSE';
         else if(is_string($val)){
-            if(preg_match('/^\:[^\s\:]*(?<!:)/', $val) == 1 && $val != ':')
+            if(preg_match('/^\:[^\s\:]*(?<!:)/', $val) == 1 && $val != ':') //Check if :param
                 return $val;
             else
                 return "'{$val}'";
