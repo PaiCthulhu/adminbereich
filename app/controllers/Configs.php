@@ -10,11 +10,4 @@ class Configs extends \AdmBereich\CRUDController{
         $this->view_folder = 'admin';
     }
 
-    function index(){
-        $this->authCheck('view');
-        $configs = new Config();
-        $configs = $configs->all();
-        parent::render('admin.pages.configs.read',['configs'=>$configs]);
-    }
-
 }

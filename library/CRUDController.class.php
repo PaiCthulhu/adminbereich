@@ -29,6 +29,14 @@ class CRUDController extends Controller {
     /**
      * @throws \Exception
      */
+    function index(){
+        $this->authCheck('view');
+        static::render($this->getView('read'), [strtolower($this->desc).'s' => $this->_model::loadAll()]);
+    }
+
+    /**
+     * @throws \Exception
+     */
     function add(){
         $this->authCheck('add');
         static::render($this->getView('add'));

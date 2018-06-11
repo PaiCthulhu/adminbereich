@@ -58,7 +58,7 @@ class Sass {
                 'sourceMapWriteTo'  => ROOT.'/public/css/' . $file . ".map",
                 'sourceMapURL'      => PATH.'/public/css/' . $file . ".map",
                 'sourceMapFilename' => PATH.'/public/css/'.$file,  // url location of .css file
-                'sourceMapBasepath' => PATH,  // difference between file & url locations, removed from ALL source files in .map
+                'sourceMapBasepath' => PATH.'/',  // difference between file & url locations, removed from ALL source files in .map
                 'sourceRoot'        => PATH.'/public/sass/',
             ));
 

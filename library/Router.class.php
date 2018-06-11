@@ -13,6 +13,8 @@ class Router{
      * @param string $url
      */
     function route($url){
+        if($url == '')
+            $url = MAIN_CLASS;
         $url = trim($url, '/\\');
         if(isset($this->routes[$url]))
             $params = explode('/', $this->routes[$url]);

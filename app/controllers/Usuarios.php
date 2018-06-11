@@ -10,14 +10,6 @@ class Usuarios extends \AdmBereich\CRUDController {
         $this->view_folder = 'admin';
     }
 
-    function index(){
-        $this->authCheck('view');
-        $usuarios = new Usuario();
-        $usuarios = $usuarios->all();
-        parent::render('admin.pages.usuarios.read',['usuarios'=>$usuarios]);
-    }
-
-
     function save(){
         $_POST['senha'] = password_hash($_POST['senha'], PASSWORD_DEFAULT);
         parent::save();
