@@ -278,7 +278,7 @@ class Query{
      */
     protected function arrayClearEmpty($array){
         return array_filter($array, function ($value) {
-            return !empty($value) || $value === 0 || $value === false;
+            return !($value === null || $value === 0 || $value === false);
         });
     }
 
