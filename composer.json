@@ -7,6 +7,11 @@
       "email":"william.jvenancio@gmail.com"
     }
   ],
+  "autoload":{
+    "psr-4":{
+      "AdmBereich\\": "library/"
+    }
+  },
   "require":{
     "php":">=7.0",
     "kint-php/kint":"~2.2",
@@ -15,7 +20,7 @@
   },
   "extra": {
     "branch-alias": {
-      "dev-master": "0.1.7-dev"
+      "dev-master": "0.1.8-dev"
     }
   }
 }

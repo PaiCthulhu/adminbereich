@@ -2,7 +2,7 @@
 namespace abApp;
 class Site extends \AdmBereich\Controller {
 
-    function home(){
+    function index(){
         $config = new Config();
         parent::render('home', ['config'=>$config]);
     }

@@ -1,6 +1,6 @@
 <?php
 
-namespace AdmBereich;
+namespace AdmBereich\Traits;
 
 trait fileUploader{
 

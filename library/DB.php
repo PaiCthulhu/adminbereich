@@ -219,7 +219,7 @@ class DB {
             return $this->handle->errorInfo();
         $r = $q->execute();
         if($r === false)
-            return [-1, -1, 'Erro ao executar query: '.$query];
+            return [-1, $q->errorCode(), 'Erro ao executar query: '.$q->errorInfo()[2]."<br/>\r\n Query: ".$query];
         return $r;
     }
 

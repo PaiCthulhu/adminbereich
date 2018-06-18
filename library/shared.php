@@ -17,16 +17,7 @@ spl_autoload_register(function ($className) {
     $fileName .= str_replace('_', DS, $className) . '.php';
 
     $folder = ROOT.DS;
-    if($namespace == 'AdmBereich'){
-        $folder .= 'library';
-        $file = str_replace('_', DS, $className) . '.trait.php';
-        if (file_exists($folder.DS.$file))
-            $fileName = $file;
-        $file = str_replace('_', DS, $className) . '.class.php';
-        if (file_exists($folder.DS.$file))
-            $fileName = $file;
-    }
-    else if($namespace == DEFAULT_NAMESPACE || in_array($namespace, DEFAULT_LIBRARIES)){
+    if($namespace == DEFAULT_NAMESPACE || in_array($namespace, DEFAULT_LIBRARIES)){
         $file = str_replace('_', DS, $className) . '.php';
         if (file_exists(ROOT . DS . 'app/controllers/'.$file)){
             $fileName = $file;

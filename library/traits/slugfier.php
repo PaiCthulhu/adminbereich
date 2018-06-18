@@ -1,5 +1,5 @@
 <?php
-namespace AdmBereich;
+namespace AdmBereich\Traits;
 
 trait slugfier {
 
