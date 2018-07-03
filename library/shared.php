@@ -1,61 +1,6 @@
 <?php
 date_default_timezone_set('America/Sao_Paulo');
 
-/**
- * @param string $class Nome da Classe
- * @throws \Exception Caso não encontre a classe, gera uma exceção
- */
-spl_autoload_register(function ($className) {
-    $className = ltrim($className, '\\');
-    $fileName  = '';
-    $namespace = '';
-    if ($lastNsPos = strrpos($className, '\\')) {
-        $namespace = substr($className, 0, $lastNsPos);
-        $className = substr($className, $lastNsPos + 1);
-        $fileName  = str_replace('\\', DS, $namespace) . DS;
-    }
-    $fileName .= str_replace('_', DS, $className) . '.php';
-
-    $folder = ROOT.DS;
-    if($namespace == DEFAULT_NAMESPACE || in_array($namespace, DEFAULT_LIBRARIES)){
-        $file = str_replace('_', DS, $className) . '.php';
-        if (file_exists(ROOT . DS . 'app/controllers/'.$file)){
-            $fileName = $file;
-            $folder .= 'app/controllers';
-        }
-        else if (file_exists(ROOT . DS . 'app/models/'.$file)){
-            $fileName = $file;
-            $folder .= 'app/models';
-        }
-        else{
-            $folder .= 'app/library';
-            //Check Trait
-            $file = str_replace('.php', '.trait.php', $fileName);
-            if (file_exists($folder.DS.$file))
-                $fileName = $file;
-            //Check Abstract
-            $file = str_replace('.php', '.class.php', $fileName);
-            if (file_exists($folder.DS.$file))
-                $fileName = $file;
-        }
-    }
-    else
-        if($namespace == '')
-            $folder .= 'vendor'.DS.strtolower($className);
-    else
-        $folder .= 'vendor';
-
-    if (file_exists($folder.DS.$fileName))
-        require_once($folder.DS.$fileName);
-    else {
-        dump([$className, $namespace, $fileName]);
-        echo "<h2>Falha ao carregar a classe \"{$className}\": Arquivo {$folder}/{$fileName} não encontrado</h2>";
-        echo "<pre>";
-        debug_print_backtrace();
-        echo "</pre>";
-    }
-});
-
 function setReporting(){
     if(DEBUG == true){
         error_reporting(E_ALL);
@@ -88,7 +33,9 @@ function str_lreplace($search, $replace, $subject) {
  * Função para despuração de variáveis
  * @param mixed $var
  */
-function dump($var){
+function dump(...$var){
+    if(count($var) == 1)
+        $var = $var[0];
     if(class_exists('Kint')){
         Kint::$aliases[] = 'dump';
         Kint::$aliases[] = 'exception_handler';
@@ -100,7 +47,7 @@ function dump($var){
 
 
 set_exception_handler(function ($exception) {
-    $c = '\\'.DEFAULT_NAMESPACE.'\\'.MAIN_CLASS;
+    $c = '\\'.DEFAULT_NAMESPACE.'\\Controllers\\'.MAIN_CLASS;
     $c = new $c();
     $c->_error($exception);
 });

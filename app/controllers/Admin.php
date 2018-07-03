@@ -1,5 +1,6 @@
 <?php
-namespace abApp;
+namespace abApp\Controllers;
+
 class Admin extends \AdmBereich\Controller {
 
     const MENU = [
@@ -13,6 +14,10 @@ class Admin extends \AdmBereich\Controller {
             ['title'=>'Configurações', 'page'=>'admin.pages.configs.read','path'=>'admin/configs','icon'=>'cogs','icon_type'=>'s']
           ];
 
+    /**
+     * @param array $params
+     * @throws \Exception
+     */
     function login($params = array()){
         if(empty($params) || !is_array($params))
             parent::render('admin.login');
@@ -23,7 +28,7 @@ class Admin extends \AdmBereich\Controller {
     }
 
     function logar(){
-        if(!\AdmBereich\Auth::login($_POST['user'], $_POST['pswd'], 'Usuario')){
+        if(!\AdmBereich\Auth::login($_POST['user'], $_POST['pswd'])){
             \AdmBereich\Session::set('login_error', 'Login Inválido');
         }
         \AdmBereich\Router::redirect('admin/');
@@ -34,6 +39,9 @@ class Admin extends \AdmBereich\Controller {
         \AdmBereich\Router::redirect('admin/');
     }
 
+    /**
+     * @throws \Exception
+     */
     function index(){
         if (!\AdmBereich\Session::has('id'))
             $this->login();

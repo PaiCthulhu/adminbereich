@@ -9,7 +9,8 @@
   ],
   "autoload":{
     "psr-4":{
-      "AdmBereich\\": "library/"
+      "AdmBereich\\": "library/",
+      "abApp\\": "app/"
     }
   },
   "require":{

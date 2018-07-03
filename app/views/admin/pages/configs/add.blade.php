@@ -14,11 +14,11 @@
                         <input type="text" id="nome" name="label" class="form-control" autocomplete="off" />
                     </div>
                     <div class="form-group">
-                        <label for="usuario">Código:</label>
-                        <input type="text" id="slug" name="key" class="form-control" autocomplete="off" />
+                        <label for="key">Código:</label>
+                        <input type="text" id="key" name="key" class="form-control" autocomplete="off" />
                     </div>
                     <div class="form-group">
-                        <label for="email">Valor:</label>
+                        <label for="valor">Valor:</label>
                         <input type="text" id="valor" name="val" class="form-control" autocomplete="off" />
                     </div>
                     <div class="form-group text-center">

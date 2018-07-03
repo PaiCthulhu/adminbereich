@@ -1,5 +1,6 @@
 <?php
-namespace abApp;
+namespace abApp\Models;
+
 class Usuario extends \AdmBereich\Model{
 
 }

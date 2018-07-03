@@ -1,22 +1,23 @@
 <?php
 
 namespace AdmBereich;
-use eftec\bladeone;
+
+use eftec\bladeone\BladeOne;
 
 class Controller{
 
-    const VIEWS = ROOT.DS.'app'.DS.'views',
+    const VIEWS = ROOT.DS.'app'.DS.'Views',
           CACHE = ROOT.DS.'tmp'.DS.'cache',
           DEFAULT_ROUTE = '';
     /**
-     * @var bladeone\BladeOne $blade
+     * @var BladeOne $blade
      * @var Model $_model
      * @var bool $_redirect
      */
     protected $blade;
 
     function __construct(){
-        $this->blade  = new bladeone\BladeOne(Controller::VIEWS, Controller::CACHE);
+        $this->blade  = new BladeOne(Controller::VIEWS, Controller::CACHE);
     }
 
     /**
@@ -41,12 +42,10 @@ class Controller{
 
     /**
      * @param string $msg
-     * @return false
      * @throws \Exception
      */
     function errorHandler($msg){
         throw new \Exception($msg);
-        return false;
     }
 
     function getPath(){

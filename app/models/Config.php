@@ -1,5 +1,6 @@
 <?php
-namespace abApp;
+namespace abApp\Models;
+
 class Config extends \AdmBereich\Model {
 
     function __construct(){

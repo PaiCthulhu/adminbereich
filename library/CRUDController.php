@@ -15,9 +15,9 @@ class CRUDController extends Controller {
 
     function __construct(){
         parent::__construct();
-        $singular = $this->getSingular(get_class($this));
-        if(!isset($this->_model) && class_exists($singular))
-            $this->_model = new $singular();
+        $model = DEFAULT_NAMESPACE.'\\Models\\'.$this->getSingular(self::name());
+        if(!isset($this->_model) && class_exists($model))
+            $this->_model = new $model();
         $this->_redirect = true;
         $this->_authPrefix = strtolower(static::name());
         $this->_authFailRedir = '';

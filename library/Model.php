@@ -44,6 +44,10 @@ class Model{
         return $this->db->fetch("SELECT * FROM {$this->_table} ORDER BY `{$field}` ".(($desc)?'DESC':''));
     }
 
+    /**
+     * @param $params
+     * @return bool|\stdClass False or stdClass
+     */
     function find($params){
         return $this->db->selectSingleByFields($this->_table, $params);
     }
@@ -267,6 +271,7 @@ class Model{
 
     /**
      * @param float $number
+     * @param int $decimals Number of decimal digits
      * @return string
      */
     static function numberFormat($number, $decimals = 0){

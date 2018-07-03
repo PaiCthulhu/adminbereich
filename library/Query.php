@@ -25,6 +25,7 @@ class Query{
 
     /**
      * @param string $table
+     * @param array $fields
      * @return Query $this
      */
     function insert($table, $fields = []){
@@ -278,7 +279,7 @@ class Query{
      */
     protected function arrayClearEmpty($array){
         return array_filter($array, function ($value) {
-            return !($value === null || $value === 0 || $value === false);
+            return isset($value) && $value !== null;
         });
     }
 

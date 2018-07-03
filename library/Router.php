@@ -13,48 +13,50 @@ class Router{
      * @param string $url
      */
     function route($url){
-        if($url == '')
-            $url = MAIN_CLASS;
-        $url = trim($url, '/\\');
-        if(isset($this->routes[$url]))
-            $params = explode('/', $this->routes[$url]);
+        $main = false;
+
+        if(isset($this->routes[trim($url, '/')]))
+            @list($class, $method) = @explode('/', $this->routes[trim($url, '/')]);
         else{
-            $params = explode('/', $url);
-            if($params[0] == 'admin')
-                array_shift($params);
+            $route = explode('/', $url, 4);
+            if($route[0] == 'admin')
+                array_shift($route);
+            @list($class, $method, $params) = $route;
         }
 
-        $ex = $this->getNamespace().$params[0];
+        if(class_exists($this->getNamespace().'Controllers\\'.ucfirst($class)))
+            $class = $this->getNamespace().'Controllers\\'.ucfirst($class);
+        else {
+            $params = $method;
+            $method = $class;
+            $class = $this->getNamespace().'Controllers\\'.ucfirst(MAIN_CLASS);
+            $main = true;
+        }
 
-        if(class_exists($ex)){
-            if(!isset($params[1]) || $params[1] == '')
-                $params[1] = 'index';
-            if(method_exists($ex, $params[1])){
-                $o = new $ex();
-                if(isset($params[2])){
-                    array_shift($params);
-                    $method = array_shift($params);
-                    $o->{$method}(implode('/', $params));
-                }
-                else
-                    $o->{$params[1]}();
+        $method = (!isset($method) || $method == '')? 'index': $method;
+
+        if(method_exists($class, $method)){
+            $o = new $class();
+            if(isset($params)){
+                $o->{$method}($params);
             }
-            else if(method_exists($ex, '__default')){
-                $o = $this->getNamespace().array_shift($params);
-                $o = new $o();
-                $o->__default(implode('/', $params));
-            }
-            else{
-                echo "Rota não existente: Método '{$params[1]}' não encontrado";
-                dump($url);
-                dump($_SERVER);
-            }
+            else
+                $o->{$method}();
+        }
+        else if(method_exists($class, '__default')){
+            $o = new $class();
+            $o->__default($method);
         }
         else{
-            echo "Rota não existente: Classe '{$params[0]}' não encontrada";
+            if(!$main)
+                echo "Rota não existente: Método '{$method}' não encontrado";
+            else
+                echo "Rota não existente: Classe '{$class}' não encontrada";
+
             dump($url);
             dump($_SERVER);
         }
+
     }
 
     function getNamespace(){

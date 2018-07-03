@@ -28,7 +28,7 @@ class Session {
 
     static function get($index){
         Session::start();
-        return $_SESSION[$index];
+        return @$_SESSION[$index];
     }
 
     static function has($index){
