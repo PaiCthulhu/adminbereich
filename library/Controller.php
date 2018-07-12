@@ -50,7 +50,7 @@ class Controller{
 
     function getPath(){
         $retorno = (!empty(static::DEFAULT_ROUTE))?static::DEFAULT_ROUTE:'';
-        return $retorno.($this->name()).'/';
+        return $retorno.strtolower($this->name()).'/';
     }
 
     static function name(){

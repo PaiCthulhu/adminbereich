@@ -13,7 +13,8 @@ class Model{
         $this->db = DB::connection();
         $this->_table = strtolower(static::name());
         $this->_pk = sprintf(DB_PK_FORMAT, $this->_table);
-        $this->created = date('Y-m-d G:i:s');
+        if(!isset($this->created))
+            $this->created = date('Y-m-d G:i:s');
     }
 
     function getTable(){
@@ -28,38 +29,66 @@ class Model{
         return $this->db->lastId();
     }
 
-    function all(){
-        return $this->db->selectAll($this->_table);
+    function all($fetch_class = true){
+        if($fetch_class)
+            return $this->db->selectAll($this->_table, \PDO::FETCH_CLASS, static::class);
+        else
+            return $this->db->selectAll($this->_table);
     }
 
-    function get($id){
-        return $this->db->selectSingle($this->_table, $id);
+    function get($id, $fetch_class = true){
+        if($fetch_class)
+            return $this->db->selectSingle($this->_table, $id, \PDO::FETCH_CLASS, static::class);
+        else
+            return $this->db->selectSingle($this->_table, $id);
     }
 
-    function getByField($field, $value){
-        return $this->db->selectSingleByFields($this->_table, [$field=>$value]);
+    function getByField($field, $value, $fetch_class = true){
+        if($fetch_class)
+            return $this->db->selectSingleByFields($this->_table, [$field=>$value], \PDO::FETCH_CLASS, static::class);
+        else
+            return $this->db->selectSingleByFields($this->_table, [$field=>$value]);
     }
 
-    function getAllOrderBy($field = 'order', $desc = false){
-        return $this->db->fetch("SELECT * FROM {$this->_table} ORDER BY `{$field}` ".(($desc)?'DESC':''));
+    function getAllOrderBy($field = 'order', $desc = false, $fetch_class = true){
+        $q = "SELECT * FROM {$this->_table} ORDER BY `{$field}` ".(($desc)?'DESC':'');
+        if($fetch_class)
+            return $this->db->fetch($q, \PDO::FETCH_CLASS, static::class);
+        else
+            return $this->db->fetch($q);
     }
 
     /**
      * @param $params
      * @return bool|\stdClass False or stdClass
      */
-    function find($params){
-        return $this->db->selectSingleByFields($this->_table, $params);
+    function find($params, $fetch_class = true){
+        if($fetch_class)
+            return $this->db->selectSingleByFields($this->_table, $params, \PDO::FETCH_CLASS, static::class);
+        else
+            return $this->db->selectSingleByFields($this->_table, $params);
     }
 
-    function findAll($params){
-        return $this->db->selectAllByFields($this->_table, $params);
+    /**
+     * @param $params
+     * @param bool $fetch_class
+     * @return bool|\stdClass
+     */
+    function findAll($params, $fetch_class = true){
+        if($fetch_class)
+            return $this->db->selectAllByFields($this->_table, $params, \PDO::FETCH_CLASS, static::class);
+        else
+            return $this->db->selectAllByFields($this->_table, $params);
     }
 
-    function findAllOrderBy($params, $orderField, $desc = false){
+    function findAllOrderBy($params, $orderField, $desc = false, $fetch_class = true){
         $q = new Query();
         $mode = ($desc)? 'DESC':'ASC';
-        return $this->db->fetch($q->select()->from($this->_table)->where($params)->orderBy($orderField, $mode));
+        $q->select()->from($this->_table)->where($params)->orderBy($orderField, $mode);
+        if($fetch_class)
+            return $this->db->fetch($q, \PDO::FETCH_CLASS, static::class);
+        else
+            return $this->db->fetch($q);
     }
 
     /**
@@ -276,6 +305,18 @@ class Model{
      */
     static function numberFormat($number, $decimals = 0){
         return number_format($number, $decimals, ',', '.');
+    }
+
+    static function dateTimeFormat($timestamp){
+        if(is_string($timestamp))
+            $timestamp = strtotime($timestamp);
+        return date('d/m/Y H:i:s', $timestamp);
+    }
+
+    static function dateFormat($timestamp){
+        if(is_string($timestamp))
+            $timestamp = strtotime($timestamp);
+        return date('d/m/Y', $timestamp);
     }
 
     /**

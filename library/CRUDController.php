@@ -21,7 +21,10 @@ class CRUDController extends Controller {
         $this->_redirect = true;
         $this->_authPrefix = strtolower(static::name());
         $this->_authFailRedir = '';
-        $this->desc = $this->_model::name();
+        if(!empty($this->_model))
+            $this->desc = $this->_model::name();
+        else
+            $this->desc = $this->getSingular(self::name());
         $this->descPrefix = 'o';
         $this->view_folder = '';
     }
