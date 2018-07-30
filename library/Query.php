@@ -204,9 +204,9 @@ class Query{
      */
     function limit($limit, $offset = 0){
         if(is_array($limit))
-            $q = "LIMIT {$limit[0]}, {$limit[1]}";
+            $q = " LIMIT {$limit[0]}, {$limit[1]}";
         else{
-            $q = "LIMIT {$limit}";
+            $q = " LIMIT {$limit}";
             if(!empty($offset))
                 $q .= " OFFSET {$offset}";
         }

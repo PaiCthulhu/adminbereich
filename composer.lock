@@ -4,20 +4,20 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "0fd43f20f059f10d95b3b8b4069e76a6",
+    "content-hash": "ee98ded2cbe5caf38eee339803ef6e89",
     "packages": [
         {
             "name": "eftec/bladeone",
-            "version": "2.3.5",
+            "version": "2.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/EFTEC/BladeOne.git",
-                "reference": "cd0f02b05eb976006bd71beed1ef7e7045743f6a"
+                "reference": "dcdd237323c3ee0a2eed01057be19a68a6fa0cc6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/EFTEC/BladeOne/zipball/cd0f02b05eb976006bd71beed1ef7e7045743f6a",
-                "reference": "cd0f02b05eb976006bd71beed1ef7e7045743f6a",
+                "url": "https://api.github.com/repos/EFTEC/BladeOne/zipball/dcdd237323c3ee0a2eed01057be19a68a6fa0cc6",
+                "reference": "dcdd237323c3ee0a2eed01057be19a68a6fa0cc6",
                 "shasum": ""
             },
             "require": {
@@ -26,7 +26,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "2.3.5-dev"
+                    "dev-master": "2.4-dev"
                 }
             },
             "autoload": {
@@ -52,7 +52,7 @@
                 "template",
                 "view"
             ],
-            "time": "2018-06-18T00:49:03+00:00"
+            "time": "2018-07-11T22:57:07+00:00"
         },
         {
             "name": "kint-php/kint",
@@ -114,16 +114,16 @@
         },
         {
             "name": "leafo/scssphp",
-            "version": "v0.7.6",
+            "version": "v0.7.7",
             "source": {
                 "type": "git",
                 "url": "https://github.com/leafo/scssphp.git",
-                "reference": "585f6ae84de62ffecf69c23805f25d78d7e4b794"
+                "reference": "1d656f8c02a3a69404bba6b28ec4e06edddf0f49"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/leafo/scssphp/zipball/585f6ae84de62ffecf69c23805f25d78d7e4b794",
-                "reference": "585f6ae84de62ffecf69c23805f25d78d7e4b794",
+                "url": "https://api.github.com/repos/leafo/scssphp/zipball/1d656f8c02a3a69404bba6b28ec4e06edddf0f49",
+                "reference": "1d656f8c02a3a69404bba6b28ec4e06edddf0f49",
                 "shasum": ""
             },
             "require": {
@@ -162,7 +162,7 @@
                 "scss",
                 "stylesheet"
             ],
-            "time": "2018-05-24T02:18:53+00:00"
+            "time": "2018-07-22T01:22:08+00:00"
         }
     ],
     "packages-dev": [],

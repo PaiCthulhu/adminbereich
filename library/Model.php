@@ -169,6 +169,24 @@ class Model{
     }
 
     /**
+     * @param string|Model $relClass Other-Table class
+     * @param string $relTable Relational-table
+     * @param string $fk Other-Table primary key
+     * @param string $pk Own primary key
+     * @return array|bool
+     */
+    function relGet($relClass, $relTable = '', $fk = '', $pk = ''){
+        if(is_string($relClass))
+            $relClass = new $relClass();
+        $relTable = $relTable ?: $this->_table.'_'.$relClass->_table;
+        $pk = $pk ?: $this->_pk;
+        $fk = $fk ?: $relClass->_pk;
+        $q = new Query();
+        $q->select()->from($relTable)->where([$pk=>$this->{$pk}, $fk=>$relClass->{$fk}]);
+        return $this->db->fetch($q);
+    }
+
+    /**
      * @param string|Model $relClass
      * @param string $relTable
      * @param string $fk
