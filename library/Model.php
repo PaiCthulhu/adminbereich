@@ -280,7 +280,7 @@ class Model{
      * @return mixed
      * @throws \Exception
      */
-    private function columnCheck($column, $value = null){
+    protected function columnCheck($column, $value = null){
         //Check Null
         if($value === null && $column->cannull == 'NO')
             if($column->name == $this->_pk && $column->index == 'PRI')
@@ -325,10 +325,13 @@ class Model{
         return number_format($number, $decimals, ',', '.');
     }
 
-    static function dateTimeFormat($timestamp){
+    static function dateTimeFormat($timestamp, $order = 'date'){
         if(is_string($timestamp))
             $timestamp = strtotime($timestamp);
-        return date('d/m/Y H:i:s', $timestamp);
+        if($order == 'time')
+            return date('H:i:s d/m/Y', $timestamp);
+        else
+            return date('d/m/Y H:i:s', $timestamp);
     }
 
     static function dateFormat($timestamp){

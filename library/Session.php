@@ -3,18 +3,41 @@ namespace AdmBereich;
 
 class Session {
 
+    const SESSION_STARTED = true,
+          SESSION_NOT_STARTED = false;
+
+    private $state = self::SESSION_NOT_STARTED;
+
+    /**
+     * @var Session $session Singleton
+     */
+    private static $session;
+
+    private function __construct() {
+        session_start();
+        $this->state = self::SESSION_STARTED;
+    }
+
+    private function __destruct()
+    {
+        self::destroy();
+    }
+
+    private function __clone(){ }
+    private function __wakeup(){ }
+
     static function start(){
-        @session_start();
+        if(!isset(self::$session)){
+            self::$session = new self();
+        }
+
+        return self::$session;
     }
 
     static function destroy(){
         Session::start();
         session_destroy();
     }
-
-    /*private function isLogged(){
-        return ($this->user !== false);
-    }*/
 
     static function set($index, $val){
         Session::start();

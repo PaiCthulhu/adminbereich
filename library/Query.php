@@ -156,7 +156,14 @@ class Query{
                         else
                             $q .= "`{$key}` = ".$this->valueEscape($row);
                     else
-                        if(count($row) == 2)
+                        if(count($row) == 3){
+                            if($row[2])
+                                $val = $this->valueEscape($row[1]);
+                            else
+                                $val = $row[1];
+                            $q .= "`{$key}` {$row[0]} {$val}";
+                        }
+                        elseif(count($row) == 2)
                             $q .= "`{$key}` {$row[0]} ".$this->valueEscape($row[1]);
                         else if(count($row) == 3)
                             $q .= "`$row[0]` {$row[1]} ".$this->valueEscape($row[2]);
