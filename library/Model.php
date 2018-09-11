@@ -305,6 +305,8 @@ class Model{
             if(!is_string($value))
                 if(is_object($value) && method_exists($value,'__toString'))
                     $value = $value->__toString();
+                else if($column->cannull == 'YES' AND $value === null)
+                    return null;
                 else
                     throw new \Exception("Coluna '{$column->name}' requer um valor de texto, ".Dict::translate(gettype($value))." recebido...");
             //tamanho

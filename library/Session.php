@@ -18,13 +18,8 @@ class Session {
         $this->state = self::SESSION_STARTED;
     }
 
-    private function __destruct()
-    {
-        self::destroy();
-    }
-
-    private function __clone(){ }
-    private function __wakeup(){ }
+    private function __clone(){}
+    private function __wakeup(){}
 
     static function start(){
         if(!isset(self::$session)){
