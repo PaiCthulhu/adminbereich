@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<phpdoc>
+    <title>AdminBereich</title>
+    <parser>
+        <target>tmp/docs-parser</target>
+    </parser>
+    <transformer>
+        <target>docs</target>
+    </transformer>
+    <files>
+        <directory>app</directory>
+        <directory>library</directory>
+        <ignore>app/Views/*</ignore>
+    </files>
+</phpdoc>

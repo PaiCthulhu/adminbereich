@@ -12,4 +12,4 @@ const DB_NAME = 'admdb';
 const DB_USER = 'root';
 const DB_PSWD = '';
 const DB_HOST = 'localhost';
-const DB_PK_FORMAT = 'id_%s';
+const DB_PK_FORMAT = '%s_id';

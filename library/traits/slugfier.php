@@ -1,6 +1,18 @@
 <?php
+/**
+ * AdminBereich Framework
+ *
+ * @link      https://github.com/PaiCthulhu/adminbereich
+ * @copyright Copyright (c) 2018-2019 William J. Venancio
+ * @license   https://github.com/PaiCthulhu/adminbereich/blob/master/LICENSE.txt (Apache 2.0 License)
+ */
 namespace AdmBereich\Traits;
 
+/**
+ * Traço que fornece funções para transformar textos em "url amigáveis" ou "slugs", de forma que fique útil para motores
+ * de pesquisa(SEO) quanto legivel para usuários comuns
+ * @package AdmBereich\Traits
+ */
 trait slugfier {
 
     /**
@@ -115,10 +127,20 @@ trait slugfier {
         return $options['lowercase'] ? mb_strtolower($str, 'UTF-8') : $str;
     }
 
+    /**
+     * Cria uma url amigável de até 200 caracteres, a partir do texto fornecido
+     * @param string $string Texto que será usado para gerar a url
+     * @return string Url amigável
+     */
     static function slugify($string){
         return self::url_slug($string, ['limit'=>200]);
     }
 
+    /**
+     * Converte o texto fornecido no formato de url amigável
+     * @param string $string Texto a ser convertido
+     * @return string Texto no formato de url amigável
+     */
     static function urlSlugify($string){
         return self::url_slug($string, ['delimiter'=>'+']);
     }

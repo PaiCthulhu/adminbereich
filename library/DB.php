@@ -1,6 +1,20 @@
 <?php
+/**
+ * AdminBereich Framework
+ *
+ * @link      https://github.com/PaiCthulhu/adminbereich
+ * @copyright Copyright (c) 2018-2019 William J. Venancio
+ * @license   https://github.com/PaiCthulhu/adminbereich/blob/master/LICENSE.txt (Apache 2.0 License)
+ */
 namespace AdmBereich;
 
+/**
+ * Classe de acesso ao banco de dados
+ *
+ * Essa classe serve de embrulho para as operações da classe \PDO
+ * Ela trabalha no sistema de instância única: Singleton
+ * @package AdmBereich
+ */
 class DB {
     /**
      * @var DB $db Singleton
@@ -12,11 +26,11 @@ class DB {
     protected $handle;
 
     /**
-     * DB constructor.
-     * @param string $host
-     * @param string $user
-     * @param string $pswd
-     * @param string $db
+     * Construtor da classe DB
+     * @param string $host Endereço do serviço
+     * @param string $user Usuário de login no banco de dados
+     * @param string $pswd Senha do login do banco de dados
+     * @param string $db Base de dados do banco a ser acessada
      */
     private function __construct($host, $user, $pswd, $db){
         $dsn = "mysql:host={$host};dbname={$db};charset=UTF8";
@@ -35,9 +49,20 @@ class DB {
         $this->handle = null;
     }
 
+    /**
+     * Impede o acesso a duplicação da instância
+     */
     private function __clone(){ }
+
+    /**
+     * Impede o acesso a duplicação da instância
+     */
     private function __wakeup(){ }
 
+    /**
+     * Ponto de acesso à instância Singleton da classe DB
+     * @return DB
+     */
     public static function connection(){
         if(!isset(self::$db))
             self::$db = new self(DB_HOST, DB_USER, DB_PSWD, DB_NAME);
@@ -61,6 +86,7 @@ class DB {
     }
 
     /**
+     * Faz uma busca de registros a partir de uma query SQL
      * @param string $query Uma query do SQL
      * @param int $mode Modo de fetch do PDO, principais valores são: PDO::FETCH_OBJ, PDO::FETCH_CLASS e PDO::FETCH_ARRAY
      * @param mixed $arg Argumento para a função PDO::fetchAll()
@@ -81,8 +107,9 @@ class DB {
     }
 
     /**
-     * @param string $search
-     * @return array|bool
+     * Busca e exibe a lista das tabelas
+     * @param string $search Se passado um valor, filtra as tabelas listadas
+     * @return array|bool FALSE se nada for encontrado, se não retorna a listagem das tabelas
      */
     function selectTables($search = ''){
         $q = new Query();
@@ -103,6 +130,11 @@ class DB {
         }
     }
 
+    /**
+     * Lista as colunas da tabela $table
+     * @param string $table Nome da tabela
+     * @return array|bool FALSE se ocorrer um erro, senão trás um array listando as colunas
+     */
     function selectColumns($table){
         $q = new Query();
         $q->select(
@@ -116,15 +148,23 @@ class DB {
         return $this->fetch($q);
     }
 
+    /**
+     * Seleciona todos os registros da tabela $table
+     * @param string $table Nome da tabela
+     * @param int $mode Modo de fetch do PDO, principais valores são: PDO::FETCH_OBJ, PDO::FETCH_CLASS e PDO::FETCH_ARRAY
+     * @param null $classname Nome da classe pra ser instânciada caso seja passado o parâmetro PDO::FETCH_CLASS
+     * @return array|bool FALSE se nenhum registro for encontrado, se não retorna o array da listagem
+     */
     function selectAll($table, $mode = \PDO::FETCH_OBJ, $classname = null){
         $q = new Query();
         return $this->fetch($q->select()->from($table), $mode, $classname);
     }
 
     /**
-     * @param $table
-     * @param $id
-     * @param int $mode
+     * Seleciona um registro através do id na tabela $table
+     * @param string $table Nome da tabela
+     * @param int $id Id
+     * @param int $mode Modo de fetch do PDO
      * @param string|null $classname Nome da classe a ser instanciada, caso $mode seja PDO::FETCH_CLASS
      * @return bool|array|\stdClass
      */
@@ -146,9 +186,10 @@ class DB {
 
 
     /**
-     * @param $table
-     * @param $params
-     * @param int $mode
+     * Seleciona um único registro da tabela $table filtrando pelo parâmetros de $params
+     * @param string $table Nome da tabela a ser acessada
+     * @param array $params Lista dos parâmetros, consulte Query.where()
+     * @param int $mode Código do método de retorno, seguinto as constantes da classe PDO
      * @param string|null $classname Nome da classe a ser instanciada, caso $mode seja PDO::FETCH_CLASS
      * @return \stdClass|bool
      */
@@ -162,11 +203,12 @@ class DB {
     }
 
     /**
-     * @param $table
-     * @param $params
-     * @param int $mode
+     * Seleciona tudo da tabela $table filtrando pelo parâmetros de $params
+     * @param string $table Nome da tabela a ser acessada
+     * @param array $params Lista dos parâmetros, consulte Query.where()
+     * @param int $mode Código do método de retorno, seguinto as constantes da classe PDO
      * @param string|null $classname Nome da classe a ser instanciada, caso $mode seja PDO::FETCH_CLASS
-     * @return \stdClass|bool
+     * @return array|bool
      */
     function selectAllByFields($table, $params, $mode = \PDO::FETCH_OBJ, $classname = null){
         return $this->fetch((new Query())->select()->from($table)->where($params), $mode, $classname);
@@ -185,9 +227,10 @@ class DB {
     }
 
     /**
+     * Atualiza um registro
      * @param string $table Nome da tabela
      * @param array $params Array de dados a serem atualizados, onde a chave deve ser o nome do campo
-     * @param array|int $id todo escrever a explicação disso aqui
+     * @param array|int $id Id ou array de ids
      * @return array|bool Retorna TRUE caso a inserção suceda, caso contrário, retorna o array com código e mensagem do erro
      */
     function update($table, $params, $id){
@@ -198,6 +241,7 @@ class DB {
     }
 
     /**
+     * Deleta um registro da tabela
      * @param string $table Nome da tabela
      * @param array $params Array de parâmetros para a exclusão, baseado na Query::where
      * @return array|\PDOStatement
@@ -210,6 +254,7 @@ class DB {
     }
 
     /**
+     * Executa uma query SQL no banco
      * @param $query
      * @return array|bool
      */
@@ -223,6 +268,10 @@ class DB {
         return $r;
     }
 
+    /**
+     * Obtém o id gerado/acessado na última transação
+     * @return string Id
+     */
     function lastId(){
         return $this->handle->lastInsertId();
     }
@@ -266,6 +315,10 @@ class DB {
     }
 
     /**
+     * Separa um array em um novo array sequencial, contendo um array listando todas as chaves no primeiro membro, e um
+     * com todos os valores no segundo
+     *
+     * Ex: ["a"=>"foo","b"=>"bar"] => [["a","b"],["foo","bar"]]
      * @param $array
      * @return array
      */

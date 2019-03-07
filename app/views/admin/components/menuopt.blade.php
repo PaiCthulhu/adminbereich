@@ -4,7 +4,7 @@
     </li>
 @else
     <li>
-        <a class="menu-opt{{preg_match("/{$option['page']}/", $_page) == 1 ?' active':''}}" href="{{PATH.DS.$option['path']}}">
+        <a class="menu-opt{{preg_match("/{$option['page']}/", $_page) == 1 ?' active':''}}" href="{{PATH."/".$option['path']}}">
             @include('default.icon',['i'=>$option['icon'],'t'=>$option['icon_type']]) {{$option['title']}}
         </a>
     </li>

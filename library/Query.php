@@ -1,15 +1,29 @@
 <?php
-
+/**
+ * AdminBereich Framework
+ *
+ * @link      https://github.com/PaiCthulhu/adminbereich
+ * @copyright Copyright (c) 2018-2019 William J. Venancio
+ * @license   https://github.com/PaiCthulhu/adminbereich/blob/master/LICENSE.txt (Apache 2.0 License)
+ */
 namespace AdmBereich;
 
+/**
+ * Classe auxiliar usada para gerar queries SQL de forma mais prática e/ou eficaz
+ * @package AdmBereich
+ */
 class Query{
 
     /**
-     * @var string $query
+     * @var string $query Query SQL atual da instância
      */
     protected $query;
 
+    const ORDER_BY_RANDOM = 'RAND()';
+
     /**
+     * Função padrão do PHP que é executada quando a classe é usada como uma string; por exemplo, ao concatenar o objeto
+     * com um texto
      * @return string
      */
     function __toString(){
@@ -17,16 +31,18 @@ class Query{
     }
 
     /**
-     * @return string
+     * Obtém a query SQL atual do objeto
+     * @return string Query SQL
      */
     function getSQL(){
         return $this->query;
     }
 
     /**
-     * @param string $table
-     * @param array $fields
-     * @return Query $this
+     * Gera a declaração SQL INSERT INTO, onde se fornecido um array, cria a lista das colunas afetados
+     * @param string $table Nome da tabela onde ocorrerá a inserção
+     * @param array $fields Se preenchido, gera a lista de colunas afetadas
+     * @return Query $this Retorna a própria instância para encadeamento de métodos
      */
     function insert($table, $fields = []){
         $q = "INSERT INTO `{$table}`";
@@ -43,8 +59,9 @@ class Query{
     }
 
     /**
+     * Gera a declaração complementar VALUES, gerando a lista dos valores a partir de um array
      * @param array $params
-     * @return Query $this
+     * @return Query $this Retorna a própria instância para encadeamento de métodos
      */
     function values($params){
         $q = "VALUES ";
@@ -71,8 +88,9 @@ class Query{
     }
 
     /**
-     * @param string $table
-     * @return Query $this
+     * Gera a primeira parte da declaração SQL UPDATE
+     * @param string $table Nome da tabela a ser atualizada
+     * @return Query $this Retorna a própria instância para encadeamento de métodos
      */
     function update($table){
         $this->query = "UPDATE `{$table}` ";
@@ -80,8 +98,10 @@ class Query{
     }
 
     /**
-     * @param array $params
-     * @return Query $this
+     * Gera o corpo da declaração SQL UPDATE, preenchendo colunas e valores conforme as chaves e valores do array de
+     * parâmetros
+     * @param array $params Array associativo, contendo as colunas como chaves
+     * @return Query $this Retorna a própria instância para encadeamento de métodos
      */
     function set($params){
         $q = 'SET ';
@@ -95,8 +115,9 @@ class Query{
     }
 
     /**
-     * @param string $table
-     * @return Query $this
+     * Gera a declaração SQL DELETE FROM
+     * @param string $table Nome da tabela que terá o(s) registro(s) deletado(s)
+     * @return Query $this Retorna a própria instância para encadeamento de métodos
      */
     function delete($table){
         $this->query = "DELETE FROM `{$table}` ";
@@ -104,8 +125,9 @@ class Query{
     }
 
     /**
-     * @param array $fields
-     * @return Query $this
+     * Gera a primeira parte da declaração SQL SELECT
+     * @param array $fields Se fornecido, cria a lista dos campos que serão buscados
+     * @return Query $this Retorna a própria instância para encadeamento de métodos
      */
     function select($fields = []){
         $q = "SELECT ";
@@ -127,8 +149,9 @@ class Query{
     }
 
     /**
-     * @param string|array $table
-     * @return Query $this
+     * Gera a declaração auxiliar FROM
+     * @param string|array $table Nome da tabela
+     * @return Query $this Retorna a própria instância para encadeamento de métodos
      */
     function from($table){
         if(is_array($table))
@@ -139,14 +162,22 @@ class Query{
     }
 
     /**
-     * @param array $conds
-     * @param string $mode
-     * @return Query $this
+     * Gera a declaração SQL WHERE, conforme o array de condições fornecido
+     *
+     * Os parâmetros devem ser um array associativo, onde a chave é o nome da coluna e seu valor, o valor a ser buscado.
+     * Ex: ['categoria_id'=>2, 'ativo'=>true] => "WHERE `categoria_id` = 2 AND `ativo` = 1"
+     *
+     * Você pode substituir o valor por um array sequencial para fazer condicionais.
+     * Ex: ['valor'=>['>=',20]] => "WHERE `valor` >= 20"
+     *
+     * @param array $conds Condições para a busca
+     * @param string $mode Operador de concatenação lógica das condições, pode ser AND ou OR
+     * @return Query $this Retorna a própria instância para encadeamento de métodos
      */
     function where($conds = [], $mode = 'AND'){
         $q = "WHERE ";
         if(!empty($conds)){
-            if(!$this->isAssoc($conds) AND count($conds) == 2)
+            if(!$this->isAssoc($conds) AND count($conds) == 2 AND is_string($conds[0]))
                 $q .= "`{$conds[0]}` = ".$this->valueEscape($conds[1]);
             else
                 foreach ($conds as $key=>$row){
@@ -155,18 +186,19 @@ class Query{
                             $q .= "`{$key}` IS ".$this->valueEscape($row);
                         else
                             $q .= "`{$key}` = ".$this->valueEscape($row);
-                    else
-                        if(count($row) == 3){
-                            if($row[2])
-                                $val = $this->valueEscape($row[1]);
+                    else{
+                        if(count($row) == 4){
+                            if($row[3] === false)
+                                $q .= "`$row[0]` {$row[1]} $row[2]";
                             else
-                                $val = $row[1];
-                            $q .= "`{$key}` {$row[0]} {$val}";
+                                $q .= "$row[0] {$row[1]} ".$this->valueEscape($row[2]);
+
                         }
-                        elseif(count($row) == 2)
-                            $q .= "`{$key}` {$row[0]} ".$this->valueEscape($row[1]);
                         else if(count($row) == 3)
                             $q .= "`$row[0]` {$row[1]} ".$this->valueEscape($row[2]);
+                        elseif(count($row) == 2)
+                            $q .= "`{$key}` {$row[0]} ".$this->valueEscape($row[1]);
+                    }
                     $q.= ($key !== $this->arrayLastKey($conds))?" {$mode} ":" ";
                 }
         }
@@ -177,13 +209,16 @@ class Query{
     }
 
     /**
-     * @param string|array $field
-     * @param string $ord
-     * @return Query $this
+     * Adiciona a palavra-chave SQL ORDER BY, para ordenar os resultados
+     * @param string|array $field Campo ou campos que serão usados de índice para a ordenação
+     * @param string $ord Direção da ordenação, pode ser ASC para ascendente ou DESC para descendente
+     * @return Query $this Retorna a própria instância para encadeamento de métodos
      */
     function orderBy($field, $ord = 'ASC'){
         $q = "ORDER BY ";
-        if(is_array($field)){
+        if($field == self::ORDER_BY_RANDOM)
+            $q .= "RAND()";
+        else if(is_array($field)){
             foreach ($field as $k=>$row){
                 if(is_array($row))
                     list($f,$m) = [$row[0],$row[1]];
@@ -205,9 +240,10 @@ class Query{
     }
 
     /**
-     * @param int|array $limit
-     * @param int $offset
-     * @return Query $this
+     * Cláusula de limite, usada no MySQL para delimitar o tamanho do conjunto retornado
+     * @param int|array $limit Número máximo de registros retornados
+     * @param int $offset Desloca o início da contagem pra outro ponto da lista, muito útil para paginação
+     * @return Query $this Retorna a própria instância para encadeamento de métodos
      */
     function limit($limit, $offset = 0){
         if(is_array($limit))
@@ -222,7 +258,8 @@ class Query{
     }
 
     /**
-     * @return Query $this
+     * Gera a declaração SQL SHOW TABLES
+     * @return Query $this Retorna a própria instância para encadeamento de métodos
      */
     function showTables(){
         $this->query = "SHOW TABLES ";
@@ -230,8 +267,9 @@ class Query{
     }
 
     /**
+     * Gera a declaração SQL SHOW
      * @param string $index
-     * @return $this
+     * @return Query $this Retorna a própria instância para encadeamento de métodos
      *
      */
     function showIndex($index = 'INDEX'){
@@ -242,7 +280,7 @@ class Query{
     /**
      * Aquela exceção.... adiciona manualmente strings à Query
      * @param string $string
-     * @return Query $this
+     * @return Query $this Retorna a própria instância para encadeamento de métodos
      */
     function extra($string){
         $this->query .= $string;
@@ -250,8 +288,10 @@ class Query{
     }
 
     /**
-     * @param mixed $val
-     * @return bool|string
+     * "Escapa" valores para serem recebidos de maneira segura pela Query SQL, prezando pela tipagem original do valor
+     * @param mixed $val Valor que será inserido no banco de dados
+     * @return bool|string Retorna false caso o valor não seja um tipo primitivo, como um array ou objeto, senão retorna
+     * o valor convetido para uma Query SQL
      */
     protected function valueEscape($val){
         if(is_null($val))
@@ -262,7 +302,7 @@ class Query{
             if(preg_match('/^\:[^\s\:]*(?<!:)/', $val) == 1 && $val != ':') //Check if :param
                 return $val;
             else
-                return "'{$val}'";
+                return "'".str_replace("'", "\\'", $val)."'";
         }
         else if(is_int($val))
             return $val;
@@ -281,8 +321,9 @@ class Query{
     }
 
     /**
+     * Remove todas as chaves vazias de um array
      * @param array $array
-     * @return array
+     * @return array Retorna o array filtrado
      */
     protected function arrayClearEmpty($array){
         return array_filter($array, function ($value) {
@@ -290,6 +331,12 @@ class Query{
         });
     }
 
+    /**
+     * Retorna a última chave de um array
+     * @param array $array
+     * @return int|string|null Retorna a posição em um array indexado, o nome da chave no caso de um array associativo
+     * ou null no caso da variável fornecida não ser um array
+     */
     protected function arrayLastKey($array){
         end($array);
         return key($array);

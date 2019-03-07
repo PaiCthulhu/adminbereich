@@ -1,6 +1,9 @@
 
 \.idea/
 \tmp/cache/*
+\tmp/docs-parser/*
 \vendor/*
+\docs/*
 desktop\.ini
 composer.phar
+phpdoc.phar

@@ -5,10 +5,10 @@
         <div class="card full">
             <div class="card-header">
                 <h5 class="card-title">@include('default.icon',['i'=>'user-plus','t'=>'s']) &nbsp;Adicionar Usuário</h5>
-                <a href="{{PATH.DS}}admin/usuarios" class="float-right"><< Voltar</a>
+                <a href="{{PATH}}/admin/usuarios" class="float-right"><< Voltar</a>
             </div>
             <div class="card-body">
-                <form action="{{PATH.DS}}admin/usuarios/save" method="POST">
+                <form action="{{PATH}}/admin/usuarios/save" method="POST">
                     <div class="form-group">
                         <label for="nome">Nome:</label>
                         <input type="text" id="nome" name="nome" class="form-control" autocomplete="off" />

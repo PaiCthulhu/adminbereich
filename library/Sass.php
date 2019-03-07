@@ -1,8 +1,15 @@
 <?php
+/**
+ * AdminBereich Framework
+ *
+ * @link      https://github.com/PaiCthulhu/adminbereich
+ * @copyright Copyright (c) 2018-2019 William J. Venancio
+ * @license   https://github.com/PaiCthulhu/adminbereich/blob/master/LICENSE.txt (Apache 2.0 License)
+ */
 namespace AdmBereich;
 
 /**
- * Class Sass
+ * Encapsula a biblioteca laravel-sass para verificar e compilar arquivos .sass
  *
  * Baseado no laravel-sass, criado por Chris @panique (https://www.dev-metal.com/)
  * @package AdmBereich

@@ -1,16 +1,27 @@
 <?php
+/**
+ * Arquivo com funções de configuração
+ */
 date_default_timezone_set('America/Sao_Paulo');
+mb_internal_encoding('UTF-8');
+mb_http_output('UTF-8');
+Kint\Renderer\RichRenderer::$folder = false;
 
+/**
+ * Configura as variáveis de exibição de erros conforme o sistema está ou não "em produção"
+ *
+ * Caso esteja em produção, ao invés de exibir, grava o erro em um arquivo error.log
+ */
 function setReporting(){
-    if(DEBUG == true){
+    if(DEBUG == true){      //Modo Desenvolvimento
         error_reporting(E_ALL);
         ini_set('display_errors',"on");
     }
-    else{
+    else{                   //Modo Produção
         error_reporting(E_ALL);
         ini_set('display_errors',"off");
         ini_set('log_errors','On');
-        ini_set('error_log',ROOT.DS.'tmp'.DS.'logs'.DS.'error.log');
+        ini_set('error_log',ROOT.'/tmp/logs/error.log');
     }
 }
 

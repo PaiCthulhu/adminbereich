@@ -1,18 +1,34 @@
 <?php
-
+/**
+ * AdminBereich Framework
+ *
+ * @link      https://github.com/PaiCthulhu/adminbereich
+ * @copyright Copyright (c) 2018-2019 William J. Venancio
+ * @license   https://github.com/PaiCthulhu/adminbereich/blob/master/LICENSE.txt (Apache 2.0 License)
+ */
 namespace AdmBereich;
 
-class CRUDController extends Controller {
+/**
+ * Class CRUDController
+ * @package AdmBereich
+ */
+abstract class CRUDController extends Controller {
     /**
-     * @var Model $_model
-     * @var bool $_redirect
-     * @var string $_authPrefix
-     * @var string $_authFailRedir
-     * @var string $view_folder
+     * @var Model $_model Instância de uma classe Model referente a este controlador
+     * @var bool $_redirect ativa ou desativa o redirecionamento após operações no banco de dados
+     * @var string $_authPrefix Prefixo das permissões associadas a este controlador
+     * @var string $_authFailRedir Endereço que o usuário deverá ser redirecionado caso não possua permissão
      */
-    protected $_model, $_redirect, $_authPrefix, $_authFailRedir, $view_folder;
+    protected $_model, $_redirect, $_authPrefix, $_authFailRedir;
     public $desc, $descPrefix;
 
+    /**
+     * Construtor CRUDController
+     *
+     * Além de instanciar a classe, busca o model relativo a este controlador, e seta as configurações iniciais do
+     * controlador.
+     * @throws \Exception
+     */
     function __construct(){
         parent::__construct();
         $model = DEFAULT_NAMESPACE.'\\Models\\'.$this->getSingular(self::name());
@@ -26,10 +42,10 @@ class CRUDController extends Controller {
         else
             $this->desc = $this->getSingular(self::name());
         $this->descPrefix = 'o';
-        $this->view_folder = '';
     }
 
     /**
+     * Lista todos os registros associados
      * @throws \Exception
      */
     function index(){
@@ -38,6 +54,7 @@ class CRUDController extends Controller {
     }
 
     /**
+     * Exibe o formulário para cadastrar um novo registro
      * @throws \Exception
      */
     function add(){
@@ -46,6 +63,7 @@ class CRUDController extends Controller {
     }
 
     /**
+     * Exibe a view do formulário de edição de registros
      * @param $id
      * @throws \Exception
      */
@@ -63,6 +81,7 @@ class CRUDController extends Controller {
     }
 
     /**
+     * Cria um novo registro
      * @return bool
      * @throws \Exception
      */
@@ -92,6 +111,7 @@ class CRUDController extends Controller {
     }
 
     /**
+     * Atualiza um registro
      * @return bool
      * @throws \Exception
      */
@@ -127,8 +147,9 @@ class CRUDController extends Controller {
     }
 
     /**
-     * @param int $id
-     * @return bool
+     * Deleta um registro, apartir de seu Id
+     * @param int $id Id do registro
+     * @return bool TRUE caso suceda, FALSE caso contrário
      * @throws \Exception
      */
     function delete($id){
@@ -147,18 +168,25 @@ class CRUDController extends Controller {
         return false;
     }
 
-
-    function getView($mode){
-        $folder = (!empty($this->view_folder))? $this->view_folder.'.':'';
-        return $folder."pages.".strtolower(static::name()).".{$mode}";
-    }
-
+    /**
+     * Remove o "S", do final da string
+     *
+     * Essa função é utilizada para que o Controllers carreguem automaticamente seu Model, que por padrão tem o mesmo
+     * nome do Controller, porém no singular. A idéia é expandir esta função para acomodar plurais irregulares da língua
+     * portuguesa
+     *
+     * @param string $string
+     * @return string
+     */
     function getSingular($string){
         if(substr($string, -1) == 's')
             $string = mb_substr($string, 0, -1);
         return $string;
     }
 
+    /**
+     * @param string $mode
+     */
     function authCheck($mode){
         if (!Auth::hasPerm($this->_authPrefix.'_'.$mode)){
             Router::redirect($this->_authFailRedir);

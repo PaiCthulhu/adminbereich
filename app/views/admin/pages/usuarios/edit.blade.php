@@ -4,12 +4,12 @@
     <section class="main">
         <div class="card full">
             <div class="card-header">
-                <h5 class="card-title">@include('default.icon',['i'=>'user','t'=>'s']) &nbsp;Editar Usuário #{{$usuario->id_usuario}} - {{$usuario->nome}}</h5>
-                <a href="{{PATH.DS}}admin/usuarios" class="float-right"><< Voltar</a>
+                <h5 class="card-title">@include('default.icon',['i'=>'user','t'=>'s']) &nbsp;Editar Usuário #{{$usuario->usuario_id}} - {{$usuario->nome}}</h5>
+                <a href="{{PATH}}/admin/usuarios" class="float-right"><< Voltar</a>
             </div>
             <div class="card-body">
-                <form action="{{PATH.DS}}admin/usuarios/update" method="POST">
-                    <input type="hidden" id="id" name="id_usuario" value="{{$usuario->id_usuario}}" />
+                <form action="{{PATH}}/admin/usuarios/update" method="POST">
+                    <input type="hidden" id="id" name="usuario_id" value="{{$usuario->usuario_id}}" />
                     <div class="form-group">
                         <label for="nome">Nome:</label>
                         <input type="text" id="nome" name="nome" class="form-control" value="{{$usuario->nome}}" />

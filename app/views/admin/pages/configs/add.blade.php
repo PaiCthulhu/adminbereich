@@ -5,10 +5,10 @@
         <div class="card full">
             <div class="card-header">
                 <h5 class="card-title">@include('default.icon',['i'=>'cog','t'=>'s']) &nbsp;Adicionar Configuração</h5>
-                <a href="{{PATH.DS}}admin/configs" class="float-right"><< Voltar</a>
+                <a href="{{PATH}}/admin/configs" class="float-right"><< Voltar</a>
             </div>
             <div class="card-body">
-                <form action="{{PATH.DS}}admin/configs/save" method="POST">
+                <form action="{{PATH}}/admin/configs/save" method="POST">
                     <div class="form-group">
                         <label for="nome">Nome:</label>
                         <input type="text" id="nome" name="label" class="form-control" autocomplete="off" />
