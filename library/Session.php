@@ -36,7 +36,7 @@ class Session {
      * Session constructor.
      */
     private function __construct() {
-        session_start();
+        @session_start();
         $this->state = self::SESSION_STARTED;
     }
 

@@ -39,6 +39,7 @@ class DB {
         }
         catch (\PDOException $e){
             $this->errorHandler("Falha ao conectar-se ao banco de dados", $e);
+            die();
         }
     }
 
@@ -65,7 +66,7 @@ class DB {
      */
     public static function connection(){
         if(!isset(self::$db))
-            self::$db = new self(DB_HOST, DB_USER, DB_PSWD, DB_NAME);
+            self::$db = new self($_ENV['DB_HOST'], $_ENV['DB_USER'], $_ENV['DB_PSWD'], $_ENV['DB_NAME']);
 
         return self::$db;
     }
@@ -90,7 +91,7 @@ class DB {
      * @param string $query Uma query do SQL
      * @param int $mode Modo de fetch do PDO, principais valores são: PDO::FETCH_OBJ, PDO::FETCH_CLASS e PDO::FETCH_ARRAY
      * @param mixed $arg Argumento para a função PDO::fetchAll()
-     * @return array|bool
+     * @return array|false
      */
     function fetch($query, $mode = \PDO::FETCH_OBJ, $arg = null){
         $q = $this->query($query);
@@ -124,7 +125,7 @@ class DB {
         else{
             $retorno = [];
             foreach ($res as $row){
-                $retorno[] = $row->{'Tables_in_'.DB_NAME};
+                $retorno[] = $row->{"Tables_in_{$_ENV['DB_NAME']}"};
             }
             return $retorno;
         }
@@ -144,7 +145,7 @@ class DB {
              'IS_NULLABLE'=>'cannull',
              'DATA_TYPE'=>'type',
              'CHARACTER_MAXIMUM_LENGTH'=>'length',
-             'COLUMN_KEY'=>'index'])->from(['INFORMATION_SCHEMA','COLUMNS'])->where(['TABLE_SCHEMA'=>DB_NAME,'TABLE_NAME'=>$table]);
+             'COLUMN_KEY'=>'index'])->from(['INFORMATION_SCHEMA','COLUMNS'])->where(['TABLE_SCHEMA'=>$_ENV['DB_NAME'],'TABLE_NAME'=>$table]);
         return $this->fetch($q);
     }
 
@@ -299,7 +300,7 @@ class DB {
      * @param string $msg
      * @param array|\PDOException $errorInfo
      * @param string $query
-     * @return bool
+     * @return false
      */
     function errorHandler($msg, $errorInfo, $query = ''){
         if(is_array($errorInfo)){

@@ -8,8 +8,10 @@
  */
 namespace AdmBereich;
 
+use ScssPhp\ScssPhp\Compiler;
+
 /**
- * Encapsula a biblioteca laravel-sass para verificar e compilar arquivos .sass
+ * Encapsula a biblioteca scssphp/scssphp para verificar e compilar arquivos .sass
  *
  * Baseado no laravel-sass, criado por Chris @panique (https://www.dev-metal.com/)
  * @package AdmBereich
@@ -42,14 +44,14 @@ class Sass {
         if (! $has_changes) return false;
 
         // scssc will be loaded automatically via Composer
-        $scss_compiler = new \Leafo\ScssPhp\Compiler();
+        $scss_compiler = new Compiler();
 
         // set the path where your _mixins are
         $scss_compiler->setImportPaths($scss_folder);
         // set css formatting (normal, nested or minimized), @see http://leafo.net/scssphp/docs/#output_formatting
         $scss_compiler->setFormatter($format_style);
 
-        $scss_compiler->setSourceMap(\Leafo\ScssPhp\Compiler::SOURCE_MAP_FILE);
+        $scss_compiler->setSourceMap(Compiler::SOURCE_MAP_FILE);
 
         // step through all .scss files in that folder
         foreach ($filelist as $file_path) {
@@ -61,13 +63,16 @@ class Sass {
 
             $file = explode('/', $css_path);
             $file = end($file);
-            $scss_compiler->setSourceMapOptions(array(
+            $params = [
                 'sourceMapWriteTo'  => ROOT.'/public/css/' . $file . ".map",
                 'sourceMapURL'      => PATH.'/public/css/' . $file . ".map",
                 'sourceMapFilename' => PATH.'/public/css/'.$file,  // url location of .css file
-                'sourceMapBasepath' => PATH.'/',  // difference between file & url locations, removed from ALL source files in .map
-                'sourceRoot'        => PATH.'/public/sass/',
-            ));
+                'sourceMapBasepath' => ROOT.'/public/sass/',  // difference between file & url locations, removed from ALL source files in .map
+                'sourceRoot'        => PATH.'/public/sass/'
+            ];
+            if (in_array(PHP_OS, ["WINNT","WIN32","Windows"]))
+                $params['sourceMapBasepath'] = str_replace(DIRECTORY_SEPARATOR, "/", ROOT)."/public/sass/";
+            $scss_compiler->setSourceMapOptions($params);
 
             // get .scss's content, put it into $string_sass
             $string_sass = file_get_contents($scss_path);

@@ -197,7 +197,10 @@ class Query{
                         else if(count($row) == 3)
                             $q .= "`$row[0]` {$row[1]} ".$this->valueEscape($row[2]);
                         elseif(count($row) == 2)
-                            $q .= "`{$key}` {$row[0]} ".$this->valueEscape($row[1]);
+                            if($row[0] == "BETWEEN" && is_array($row[1]))
+                                $q.= "`{$key}` {$row[0]} ".implode(" AND ", $this->valueEscape($row[1]));
+                            else
+                                $q .= "`{$key}` {$row[0]} ".$this->valueEscape($row[1]);
                     }
                     $q.= ($key !== $this->arrayLastKey($conds))?" {$mode} ":" ";
                 }
@@ -290,8 +293,8 @@ class Query{
     /**
      * "Escapa" valores para serem recebidos de maneira segura pela Query SQL, prezando pela tipagem original do valor
      * @param mixed $val Valor que será inserido no banco de dados
-     * @return bool|string Retorna false caso o valor não seja um tipo primitivo, como um array ou objeto, senão retorna
-     * o valor convetido para uma Query SQL
+     * @return false|mixed Retorna false caso o valor não seja um tipo válido senão retorna o valor convetido para uma
+     * Query SQL
      */
     protected function valueEscape($val){
         if(is_null($val))
@@ -299,13 +302,22 @@ class Query{
         else if(is_bool($val))
             return ($val)?'TRUE':'FALSE';
         else if(is_string($val)){
-            if(preg_match('/^\:[^\s\:]*(?<!:)/', $val) == 1 && $val != ':') //Check if :param
+            if($val == "\0")
+                return 'NULL';
+            else if(preg_match('/^\:[^\s\:]*(?<!:)/', $val) == 1 && $val != ':') //Check if :param
                 return $val;
             else
                 return "'".str_replace("'", "\\'", $val)."'";
         }
         else if(is_int($val))
             return $val;
+        else if(is_array($val)){
+            $new = [];
+            foreach ($val as $key=>$item) {
+                $new[$key] = $this->valueEscape($item);
+            }
+            return $new;
+        }
         else
             dump($val); //Todo implement more options
         return false;

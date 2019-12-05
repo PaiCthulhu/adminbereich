@@ -1,4 +1,4 @@
-
+.env
 \.idea/
 \tmp/cache/*
 \tmp/docs-parser/*
@@ -7,3 +7,4 @@
 desktop\.ini
 composer.phar
 phpdoc.phar
+\tmp/sessions/*

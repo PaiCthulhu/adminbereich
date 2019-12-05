@@ -72,7 +72,7 @@ class Router{
             $o->__default($method);
         }
         else{
-            if(DEBUG){
+            if($_ENV['APP_DEBUG']){
                 if(!$main)
                     echo "Rota não existente: Método '{$method}' não encontrado";
                 else

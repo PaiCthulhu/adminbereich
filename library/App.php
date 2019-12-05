@@ -8,6 +8,8 @@
  */
 namespace AdmBereich;
 
+use Dotenv\Dotenv;
+
 /**
  * Class App
  * @package AdmBereich
@@ -19,14 +21,24 @@ class App {
      */
     protected $router;
 
+    function __construct()
+    {
+        self::loadEnv();
+    }
+
     function setRouter(Router $router){
         $this->router = $router;
         return $this;
     }
 
     function run(){
-        $path = ltrim(str_replace(PATH, '', $_SERVER['REQUEST_URI']), '/');
+        $path = \ltrim(\str_freplace(PATH."/", '', $_SERVER['REQUEST_URI']), '/');
         $this->router->route($path);
+    }
+
+    static function loadEnv(){
+        $dotenv = Dotenv::createImmutable(ROOT);
+        $dotenv->load();
     }
 
 }

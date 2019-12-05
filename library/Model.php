@@ -39,7 +39,7 @@ abstract class Model{
     function __construct(){
         $this->db = DB::connection();
         $this->_table = strtolower(static::name());
-        $this->_pk = sprintf(DB_PK_FORMAT, $this->_table);
+        $this->_pk = sprintf($_ENV['DB_PK_FORMAT'], $this->_table);
         if(!isset($this->created))
             $this->created = date('Y-m-d G:i:s');
     }
@@ -123,9 +123,9 @@ abstract class Model{
     function getAllOrderBy($field = 'order', $desc = false, $fetch_class = true){
         $q = "SELECT * FROM {$this->_table} ORDER BY `{$field}` ".(($desc)?'DESC':'');
         if($fetch_class)
-            return $this->db->fetch($q, \PDO::FETCH_CLASS, static::class);
+            return $this->fetch($q);
         else
-            return $this->db->fetch($q);
+            return $this->run($q);
     }
 
     /**
@@ -152,7 +152,7 @@ abstract class Model{
      * @param array $params Condições para a busca
      * @param bool $fetch_class Quando a booleana está ativa, os registro são retornados como instâncias do modelo, ao
      * invés de objetos genéricos
-     * @return bool|array FALSE caso nada seja encontrado, senão retorna a listagem da busca
+     * @return false|array FALSE caso nada seja encontrado, senão retorna a listagem da busca
      */
     function findAll($params, $fetch_class = true){
         if($fetch_class)
@@ -178,9 +178,9 @@ abstract class Model{
         $mode = ($desc)? 'DESC':'ASC';
         $q->select()->from($this->_table)->where($params)->orderBy($orderField, $mode);
         if($fetch_class)
-            return $this->db->fetch($q, \PDO::FETCH_CLASS, static::class);
+            return $this->fetch($q);
         else
-            return $this->db->fetch($q);
+            return $this->run($q);
     }
 
     /**
@@ -213,7 +213,7 @@ abstract class Model{
 
     /**
      * Salva um registro com os valores conforme os atributos da instância atual do modelo
-     * @return array|bool Retorna TRUE caso suceda, do contrário, um array com o erro
+     * @return array|true Retorna TRUE caso suceda, do contrário, um array com o erro
      * @throws \Exception
      */
     function save(){
@@ -235,9 +235,23 @@ abstract class Model{
     }
 
     /**
+     * Salva um novo registro com os valores conforme os atributos da instância atual do modelo
+     * @return array|bool Retorna TRUE caso suceda, do contrário, um array com o erro
+     * @throws \Exception
+     */
+    function saveNew(){
+        $this->_loadColumns();
+        $opt = [];
+        foreach ($this->_columns as $column)
+            $opt[$column->name] = $this->columnCheck($column, $this->{$column->name});
+        $r = $this->create($opt);
+        return $r;
+    }
+
+    /**
      * Retorna uma instância do modelo preenchida com os valores do registro de id $id
      * @param int $id Id do registro a ser buscado
-     * @return static|bool FALSE caso o registro não seja encontrado, caso contrário, a instância do modelo com os
+     * @return static|false FALSE caso o registro não seja encontrado, caso contrário, a instância do modelo com os
      * atributos preenchidos
      * @throws \Exception
      */
@@ -248,7 +262,7 @@ abstract class Model{
 
     /**
      * Retorna a listagem de todos os registros da tabela, instanciados como o modelo
-     * @return array|bool FALSE caso nenhum registro seja encontrado, caso contrário, retorna a listagem dos registros,
+     * @return array|false FALSE caso nenhum registro seja encontrado, caso contrário, retorna a listagem dos registros,
      * já instanciados
      * @throws \ReflectionException
      */
@@ -286,7 +300,7 @@ abstract class Model{
         $fk = $fk ?: $relClass->_pk;
         $q = new Query();
         $q->select()->from($relTable)->where([$pk=>$this->{$pk}, $fk=>$relClass->{$fk}]);
-        return $this->db->fetch($q);
+        return $this->run($q);
     }
 
     /**
@@ -306,7 +320,7 @@ abstract class Model{
         $pk = $pk ?: $this->_pk;
         $fk = $fk ?: $relClass->_pk;
         $q = "SELECT {$fk} FROM {$relTable} WHERE {$pk} = ".$this->{$this->_pk};
-        $r = $this->db->fetch($q)[0];
+        $r = $this->run($q)[0];
         return $relClass::load($r->{$relClass->_pk});
     }
 
@@ -387,10 +401,19 @@ abstract class Model{
     /**
      * Executa uma query SQL direto no banco de dados
      * @param string $q
-     * @return array|bool
+     * @return array|false
      */
     function run($q){
         return $this->db->fetch($q);
+    }
+
+    /**
+     * Executa uma query SQL de busca e retorna instâncias do Modelo
+     * @param string $q
+     * @return array|false
+     */
+    function fetch($q){
+        return $this->db->fetch($q, \PDO::FETCH_CLASS, static::class);
     }
 
     /**
@@ -423,6 +446,8 @@ abstract class Model{
                 return null;
             else if($column->default == 'CURRENT_TIMESTAMP')
                 return $this->created;
+            else if(isset($column->default))
+                return $column->default;
             else
                 throw new \Exception("Coluna '{$column->name}' não pode ter um valor nulo");
 

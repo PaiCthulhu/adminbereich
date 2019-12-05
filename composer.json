@@ -21,13 +21,15 @@
     "php":">=7.0",
     "ext-pdo": "*",
     "ext-json":"*",
+    "ext-mbstring": "*",
     "kint-php/kint":"^3",
     "eftec/bladeone":"^3",
-    "leafo/scssphp":"^0.7.5"
+    "scssphp/scssphp":"^1",
+    "vlucas/phpdotenv": "^4.0"
   },
   "extra": {
     "branch-alias": {
-      "dev-master": "0.3-dev"
+      "dev-master": "v0.4.0-dev"
     }
   }
 }

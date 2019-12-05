@@ -9,8 +9,9 @@ para um nome final.
 
 Bibliotecas/Tecnologias implementadas:
 * Blade Templates, implementado através de **BladeOne**
-* **scssphp** para compilação dos arquivos do sass
+* **scssphp** para compilação dos arquivos .sass
+* **PHP dotenv** para utilização de variáveis `$_ENV` carregadas a partir do arquivo .env
+* **Kint**, para depuração de variáveis
 * **FontAwesome**, como conjunto de ícones
 * **JQuery**, para manipulação de DOM, animações e requisições AJAX
-* **Kint**, para depuração de variáveis
 * *Twitter* **Bootstrap** 4.0 via CDN para diagramação do layout 

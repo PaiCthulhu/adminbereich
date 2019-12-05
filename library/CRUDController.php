@@ -15,11 +15,21 @@ namespace AdmBereich;
 abstract class CRUDController extends Controller {
     /**
      * @var Model $_model Instância de uma classe Model referente a este controlador
+     */
+    protected $_model;
+    /**
      * @var bool $_redirect ativa ou desativa o redirecionamento após operações no banco de dados
+     */
+    protected $_redirect;
+    /**
      * @var string $_authPrefix Prefixo das permissões associadas a este controlador
+     */
+    protected $_authPrefix;
+    /**
      * @var string $_authFailRedir Endereço que o usuário deverá ser redirecionado caso não possua permissão
      */
-    protected $_model, $_redirect, $_authPrefix, $_authFailRedir;
+    protected $_authFailRedir;
+
     public $desc, $descPrefix;
 
     /**
