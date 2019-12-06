@@ -142,6 +142,6 @@ trait slugfier {
      * @return string Texto no formato de url amigável
      */
     static function urlSlugify($string){
-        return self::url_slug($string, ['delimiter'=>'+']);
+        return self::url_slug($string, ['delimiter'=>'+','transliterate'=>true]);
     }
 }
