@@ -65,7 +65,7 @@ class Sass {
             $file = end($file);
             $params = [
                 'sourceMapWriteTo'  => ROOT.'/public/css/' . $file . ".map",
-                'sourceMapURL'      => PATH.'/public/css/' . $file . ".map",
+                'sourceMapURL'      => App::resourcePath("css/{$file}.map"),
                 'sourceMapFilename' => PATH.'/public/css/'.$file,  // url location of .css file
                 'sourceMapBasepath' => ROOT.'/public/sass/',  // difference between file & url locations, removed from ALL source files in .map
                 'sourceRoot'        => PATH.'/public/sass/'

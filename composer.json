@@ -1,6 +1,10 @@
 {
   "name":"pai-cthulhu/adminbereich",
+  "type": "project",
   "description":"Framework leve para uso em sites dinâmicos",
+  "keywords": [
+    "framework"
+  ],
   "license": "Apache-2.0",
   "authors":[
     {
@@ -17,6 +21,11 @@
       "abApp\\": "app/"
     }
   },
+  "config": {
+    "optimize-autoloader": true,
+    "preferred-install": "dist",
+    "sort-packages": true
+  },
   "require":{
     "php":">=7.0",
     "ext-pdo": "*",
@@ -31,5 +40,10 @@
     "branch-alias": {
       "dev-master": "v0.4.1-dev"
     }
+  },
+  "scripts": {
+    "post-root-package-install": [
+      "@php -r \"file_exists('.env') || copy('.env.example', '.env');\""
+    ]
   }
 }

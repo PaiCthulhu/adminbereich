@@ -27,5 +27,5 @@
             </div>
         </div>
     </section>
-    <script src="{{PATH}}/public/js/admin/admDeleteConfirmation.js"></script>
+    <script src="{{\AdmBereich\App::resourcePath("js/admin/admDeleteConfirmation.js")}}"></script>
 @stop

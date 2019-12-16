@@ -4,12 +4,12 @@
     <section class="main">
         <div class="card full">
             <div class="card-header">
-                <h5 class="card-title">@include('default.icon',['i'=>'cog','t'=>'s']) &nbsp;Editar Configuração #{{$config->id}} - {{$config->label}}</h5>
+                <h5 class="card-title">@include('default.icon',['i'=>'cog','t'=>'s']) &nbsp;Editar Configuração #{{$config->config_id}} - {{$config->label}}</h5>
                 <a href="{{PATH}}/admin/configs" class="float-right"><< Voltar</a>
             </div>
             <div class="card-body">
                 <form action="{{PATH}}/admin/configs/update" method="POST">
-                    <input type="hidden" id="id" name="id" value="{{$config->id}}" />
+                    <input type="hidden" id="id" name="id" value="{{$config->config_id}}" />
                     <div class="form-group">
                         <label for="nome">Nome:</label>
                         <input type="text" id="nome" name="label" class="form-control" value="{{$config->label}}" />

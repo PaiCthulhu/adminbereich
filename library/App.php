@@ -41,4 +41,11 @@ class App {
         $dotenv->load();
     }
 
+    static function resourcePath($resource){
+        $path = PATH."/";
+        if(strpos($_SERVER['PHP_SELF'], "public") != false)
+            $path .= "public/";
+        return $path.$resource;
+    }
+
 }
