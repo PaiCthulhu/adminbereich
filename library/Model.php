@@ -220,7 +220,8 @@ abstract class Model{
         $this->_loadColumns();
         $opt = [];
         foreach ($this->_columns as $column)
-            $opt[$column->name] = $this->columnCheck($column, $this->{$column->name});
+            if(isset($this->{$column->name}))
+                $opt[$column->name] = $this->columnCheck($column, $this->{$column->name});
         if(isset($opt[$this->_pk]) && !empty($opt[$this->_pk])){
             $id = $opt[$this->_pk];
             unset($opt[$this->_pk]);
@@ -243,7 +244,8 @@ abstract class Model{
         $this->_loadColumns();
         $opt = [];
         foreach ($this->_columns as $column)
-            $opt[$column->name] = $this->columnCheck($column, $this->{$column->name});
+            if(isset($this->{$column->name}))
+                $opt[$column->name] = $this->columnCheck($column, $this->{$column->name});
         $r = $this->create($opt);
         return $r;
     }

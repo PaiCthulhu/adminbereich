@@ -1,7 +1,7 @@
 {
   "name":"pai-cthulhu/adminbereich",
   "type": "project",
-  "description":"Framework leve para uso em sites dinâmicos",
+  "description":"Microframework simples para uso em sites dinâmicos",
   "keywords": [
     "framework"
   ],
@@ -27,18 +27,19 @@
     "sort-packages": true
   },
   "require":{
-    "php":">=7.0",
-    "ext-pdo": "*",
-    "ext-json":"*",
+    "php": ">=7.0",
+    "ext-json": "*",
     "ext-mbstring": "*",
-    "kint-php/kint":"^3",
-    "eftec/bladeone":"^3",
-    "scssphp/scssphp":"^1",
+    "ext-pdo": "*",
+    "eftec/bladeone": "^3",
+    "kint-php/kint": "^3",
+    "robmorgan/phinx": "^0.11.3",
+    "scssphp/scssphp": "^1",
     "vlucas/phpdotenv": "^4.0"
   },
   "extra": {
     "branch-alias": {
-      "dev-master": "v0.4.1-dev"
+      "dev-master": "v0.5.0-dev"
     }
   },
   "scripts": {

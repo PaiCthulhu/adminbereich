@@ -32,8 +32,8 @@ class DB {
      * @param string $pswd Senha do login do banco de dados
      * @param string $db Base de dados do banco a ser acessada
      */
-    private function __construct($host, $user, $pswd, $db){
-        $dsn = "mysql:host={$host};dbname={$db};charset=UTF8";
+    private function __construct($host, $user, $pswd, $db, $port = 3306){
+        $dsn = "mysql:host={$host};port={$port};dbname={$db};charset=UTF8";
         try{
             $this->handle = new \PDO($dsn, $user, $pswd);
         }
@@ -66,7 +66,7 @@ class DB {
      */
     public static function connection(){
         if(!isset(self::$db))
-            self::$db = new self($_ENV['DB_HOST'], $_ENV['DB_USER'], $_ENV['DB_PSWD'], $_ENV['DB_NAME']);
+            self::$db = new self($_ENV['DB_HOST'], $_ENV['DB_USER'], $_ENV['DB_PSWD'], $_ENV['DB_NAME'], $_ENV['DB_PORT']);
 
         return self::$db;
     }
