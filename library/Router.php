@@ -22,6 +22,10 @@ class Router{
      * @var string $namespace
      */
     public $namespace;
+    /**
+     * @var array $extraNamespaces Lista de namespaces extras
+     */
+    protected $extraNamespaces;
 
     /**
      * Construtor da classe Router
@@ -38,22 +42,25 @@ class Router{
      */
     function route($url){
         $main = false;
+        $namespace = $this->getNamespace().'Controllers\\';
 
         if(isset($this->routes[trim($url, '/')]))
             @list($class, $method) = @explode('/', $this->routes[trim($url, '/')]);
         else{
             $route = explode('/', $url, 4);
-            if($route[0] == 'admin')
+            if(isset($this->extraNamespaces[$route[0]])){
+                $namespace = $this->extraNamespaces[$route[0]];
                 array_shift($route);
+            }
             @list($class, $method, $params) = $route;
         }
 
-        if(class_exists($this->getNamespace().'Controllers\\'.ucfirst($class)))
-            $class = $this->getNamespace().'Controllers\\'.ucfirst($class);
+        if(class_exists($namespace.ucfirst($class)))
+            $class = $namespace.ucfirst($class);
         else {
             $params = $method;
             $method = $class;
-            $class = $this->getNamespace().'Controllers\\'.ucfirst(MAIN_CLASS);
+            $class = $namespace.ucfirst(MAIN_CLASS);
             $main = true;
         }
 
@@ -96,6 +103,11 @@ class Router{
      */
     function getNamespace(){
         return '\\'.$this->namespace.'\\';
+    }
+
+    function addExtraNamespace($key, $namespace){
+        $this->extraNamespaces[$key] = $namespace;
+        return $this;
     }
 
     /**

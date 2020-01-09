@@ -22,14 +22,16 @@ class Sass {
     /**
      * Compiles all .scss files in a given folder into .css files in a given folder
      *
-     * @param string $scss_folder source folder where you have your .scss files
+     * @param string|array $scss_folder source folder where you have your .scss files
      * @param string $css_folder destination folder where you want your .css files
      * @param string $format_style CSS output format, see http://leafo.net/scssphp/docs/#output_formatting for more.
      * @return bool
      */
     static public function compile($scss_folder, $css_folder, $format_style = "scss_formatter"){
-        // get all .scss files from scss folder
-        $filelist = glob($scss_folder . "*.scss");
+        $importList = $scss_folder;
+        if(is_array($scss_folder))
+            $scss_folder = $importList[0];
+        $filelist = glob("{$scss_folder}*.scss");
 
         // loop through .scss files and see if any need recompilation
         $has_changes = false;
@@ -47,7 +49,7 @@ class Sass {
         $scss_compiler = new Compiler();
 
         // set the path where your _mixins are
-        $scss_compiler->setImportPaths($scss_folder);
+        $scss_compiler->setImportPaths($importList);
         // set css formatting (normal, nested or minimized), @see http://leafo.net/scssphp/docs/#output_formatting
         $scss_compiler->setFormatter($format_style);
 

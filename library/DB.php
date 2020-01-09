@@ -192,7 +192,7 @@ class DB {
      * @param array $params Lista dos parâmetros, consulte Query.where()
      * @param int $mode Código do método de retorno, seguinto as constantes da classe PDO
      * @param string|null $classname Nome da classe a ser instanciada, caso $mode seja PDO::FETCH_CLASS
-     * @return \stdClass|bool
+     * @return \stdClass|false
      */
     function selectSingleByFields($table, $params, $mode = \PDO::FETCH_OBJ, $classname = null){
         $q = new Query();

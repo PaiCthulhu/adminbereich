@@ -7,10 +7,17 @@ O nome **AdminBereich** veio de meu interesse pelo idioma alemão
 e significa "Área Administrativa". No momento, serve de *placeholder* 
 para um nome final.
 
-## Instalação
+## Instalação Rápida
 ```
+#Crie o projeto
 composer create-project pai-cthulhu/adminbereich <path>
+
+#Configure o banco de dados no .env
+
+#Rode as migrações de Banco de Dados
 vendor/bin/phinx migrate
+
+#Rode os semeadores
 vendor/bin/phinx seed:run
 ```
 ### Bibliotecas/Tecnologias implementadas:

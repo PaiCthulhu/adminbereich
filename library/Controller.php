@@ -76,7 +76,6 @@ abstract class Controller{
     /**
      * Retorna o caminho para este controlador
      * @return string
-     * @throws \Exception
      */
     function getPath(){
         $retorno = (!empty(static::DEFAULT_ROUTE))?static::DEFAULT_ROUTE:'';
@@ -96,10 +95,9 @@ abstract class Controller{
     /**
      * Obtém o nome do controlador (sem namespace)
      * @return string Nome do cotnrolador
-     * @throws \ReflectionException
      */
     static function name(){
-        return (new \ReflectionClass(get_called_class()))->getShortName();
+        return substr(static::class, strrpos(static::class, '\\')+1);
     }
 
 }
