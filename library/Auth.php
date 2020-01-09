@@ -8,6 +8,8 @@
  */
 namespace AdmBereich;
 
+use abApp\Models\Usuario;
+
 /**
  * Classe básica de autenticação, com as bases de login, logout e permissões
  * @package AdmBereich
@@ -23,17 +25,18 @@ class Auth {
      */
     static function login($user, $pswd, $class = USER_CLASS){
         $class = '\\'.DEFAULT_NAMESPACE.'\\'.$class;
-        $usuario = new $class();
-        $u = $usuario->find(['username'=>$user]);
+        /**
+         * @var Usuario $class
+         */
+        $u = $class::first(['username'=>$user]);
         if($u === false)
             return false;
-        $usuario = $usuario->load($u->usuario_id);
-        if(password_verify($pswd, $usuario->senha)){
-            Session::set('mail', $usuario->email);
+        if(password_verify($pswd, $u->senha)){
+            Session::set('mail', $u->email);
             Session::set('pswd', $pswd);
-            Session::set('nome', $usuario->nome);
-            Session::set('user', $usuario->username);
-            Session::set('id', $usuario->usuario_id);
+            Session::set('nome', $u->nome);
+            Session::set('user', $u->username);
+            Session::set('id', $u->usuario_id);
             return true;
         }
         else{

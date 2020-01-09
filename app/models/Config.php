@@ -1,19 +1,37 @@
 <?php
 namespace abApp\Models;
 
-class Config extends \AdmBereich\Model {
+use AdmBereich\Model;
 
-    function __construct(){
-        parent::__construct();
-        $this->_pk = 'id';
-    }
+class Config extends Model {
+    /**
+     * @var int $config_id
+     */
+    public $config_id;
+    /**
+     * @var int $config_cat_id
+     */
+    public $config_cat_id;
+    /**
+     * @var string $label
+     */
+    public $label;
+    /**
+     * @var string $val
+     */
+    public $val;
+    /**
+     * @var string $key
+     */
+    public $key;
+    /**
+     * @var string $field
+     */
+    public $field;
+
 
     function getByKey($key){
-        return $this->getByField('key', $key)->val;
-    }
-
-    function update($id, $params){
-        return $this->db->update($this->_table, $params, ['id'=>$id]);
+        return self::first(['key'=>$key])->val;
     }
 
 }

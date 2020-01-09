@@ -9,7 +9,7 @@
             </div>
             <div class="card-body">
                 <form action="{{PATH}}/admin/configs/update" method="POST">
-                    <input type="hidden" id="id" name="id" value="{{$config->config_id}}" />
+                    <input type="hidden" id="id" name="config_id" value="{{$config->config_id}}" />
                     <div class="form-group">
                         <label for="nome">Nome:</label>
                         <input type="text" id="nome" name="label" class="form-control" value="{{$config->label}}" />

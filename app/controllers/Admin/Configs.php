@@ -1,7 +1,9 @@
 <?php
-namespace abApp\Controllers;
+namespace abApp\Controllers\Admin;
 
-class Configs extends \AdmBereich\CRUDController{
+use AdmBereich\CRUDController;
+
+class Configs extends CRUDController {
 
     const DEFAULT_ROUTE = 'admin/';
 

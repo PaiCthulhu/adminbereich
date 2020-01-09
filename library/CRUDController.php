@@ -60,7 +60,7 @@ abstract class CRUDController extends Controller {
      */
     function index(){
         $this->authCheck('view');
-        static::render($this->getView('read'), [strtolower($this->desc).'s' => $this->_model::loadAll()]);
+        static::render($this->getView('read'), [strtolower($this->desc).'s' => $this->_model::all()]);
     }
 
     /**
@@ -83,7 +83,7 @@ abstract class CRUDController extends Controller {
          * @var Model $model
          */
         $model = new $this->_model();
-        $edit = $model::load($id);
+        $edit = $model::find($id);
         if($edit === false)
             throw new \Exception(strtoupper($this->descPrefix)." {$this->desc} id #{$id} não existe ou não foi encontrad{$this->descPrefix}");
         else
@@ -98,11 +98,11 @@ abstract class CRUDController extends Controller {
     function save(){
         $this->authCheck('add');
         if(!isset($this->_model))
-            die($this->errorHandler("Model não setado"));
+            $this->errorHandler("Model não setado");
         if(isset($_POST['_save'])){
             $opt = $_POST;
             unset($opt['_save']);
-            $retorno = $this->_model->create($opt);
+            $retorno = $this->_model::create($opt);
             if($retorno === true){
                 if($this->_redirect)
                     Router::redirect($this->getPath());
@@ -128,11 +128,11 @@ abstract class CRUDController extends Controller {
     function update(){
         $this->authCheck('edit');
         if(!isset($this->_model))
-            die($this->errorHandler("Model não setado"));
+            $this->errorHandler("Model não setado");
 
         $pk = $this->_model->pk();
         if(!isset($_POST[$pk]))
-            die($this->errorHandler("Id não setado (`{$pk}`)"));
+            $this->errorHandler("Id não setado (`{$pk}`)");
 
         if(isset($_POST['_edit'])){
             $opt = $_POST;
@@ -167,7 +167,7 @@ abstract class CRUDController extends Controller {
         if(!isset($this->_model))
             die($this->errorHandler("Model não setado"));
 
-        $retorno = $this->_model->delete($id);
+        $retorno = $this->_model::destroy($id);
         if($retorno == true){
             if($this->_redirect)
                 Router::redirect($this->getPath());
