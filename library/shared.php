@@ -1,8 +1,11 @@
 <?php
+if(empty($_ENV))
+    die(".env não carregada");
 /**
  * Arquivo com funções de configuração
  */
 setlocale(LC_TIME, $_ENV['APP_LOCALE_CODE'], "{$_ENV['APP_LOCALE_CODE']}.utf-8", "{$_ENV['APP_LOCALE_CODE']}.utf-8", $_ENV['APP_LOCALE_NAME']);
+setlocale(LC_MONETARY, 'pt_BR');
 date_default_timezone_set($_ENV['APP_TIMEZONE']);
 mb_internal_encoding('UTF-8');
 mb_http_output('UTF-8');

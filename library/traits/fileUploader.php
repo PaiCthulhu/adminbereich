@@ -64,7 +64,7 @@ trait fileUploader{
                 return 'Arquivo enviado com sucesso!';
                 break;
             case UPLOAD_ERR_INI_SIZE:
-                return 'Arquivo excede o tamanho máximo ('.ini_get('upload_max_filesize').'b) setado pelo servidor';
+                return 'Arquivo excede o tamanho máximo ('.ini_get('upload_max_filesize').'b) definido pelo servidor';
                 break;
             case UPLOAD_ERR_FORM_SIZE:
                 return 'Arquivo excede o limite de tamanho do formulário';

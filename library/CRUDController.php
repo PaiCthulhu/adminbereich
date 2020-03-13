@@ -60,6 +60,8 @@ abstract class CRUDController extends Controller {
      */
     function index(){
         $this->authCheck('view');
+        if(empty($this->_model))
+            throw new \Exception("Nenhum modelo definido para este Controller");
         static::render($this->getView('read'), [strtolower($this->desc).'s' => $this->_model::all()]);
     }
 

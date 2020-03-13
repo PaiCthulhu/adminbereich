@@ -15,17 +15,29 @@ namespace AdmBereich;
 abstract class Model{
 
     /**
-     * @var null|string $created Campo padrão que marca a data e hora que o registro foi criado
-     * @var null|string $update Campo padrão que marca a última alteração no registro
+     * @var int|string $created Campo padrão que marca a data e hora que o registro foi criado
      */
-    public $created, $updated;
+    public $created;
+    /**
+     * @var null|int|string $updated Campo padrão que marca a última alteração no registro
+     */
+    public $updated;
     /**
      * @var DB $db Acesso à instância do DB
+     */
+    protected $db;
+    /**
      * @var string $_table Nome da tabela
+     */
+    protected $_table;
+    /**
      * @var string $_pk Nome da coluna de chave primária
+     */
+    protected $_pk;
+    /**
      * @var array $_columns Lista das colunas
      */
-    protected $db, $_table, $_pk, $_columns;
+    protected $_columns;
 
     /**
      * Constructor da classe Model
@@ -40,7 +52,7 @@ abstract class Model{
         $this->_table = strtolower(static::name());
         $this->_pk = sprintf($_ENV['DB_PK_FORMAT'], $this->_table);
         if(!isset($this->created))
-            $this->created = date('Y-m-d G:i:s');
+            $this->created = date('Y-m-d H:i:s');
     }
 
     /**
@@ -120,8 +132,9 @@ abstract class Model{
      * @return array|bool FALSE caso nada seja encontrado, senão retorna a listagem ordenada
      */
     function getAllOrderBy($field = 'order', $desc = false, $fetch_class = true){
-        /** @noinspection SqlResolve */
-        $q = "SELECT * FROM {$this->_table} ORDER BY `{$field}` ".(($desc)?'DESC':'');
+        $q = new Query();
+        $mode = ($desc)? 'DESC':'ASC';
+        $q->select()->from($this->_table)->orderBy($field, $mode);
         if($fetch_class)
             return $this->fetch($q);
         else
@@ -236,7 +249,7 @@ abstract class Model{
 
     /**
      * Retorna a listagem de todos os registros da tabela, instanciados como o modelo
-     * @return array|false FALSE caso nenhum registro seja encontrado, caso contrário, retorna a listagem dos registros,
+     * @return static[]|false FALSE caso nenhum registro seja encontrado, caso contrário, retorna a listagem dos registros,
      * já instanciados
      */
     static function all(){
@@ -257,11 +270,26 @@ abstract class Model{
     }
 
     /**
+     * Busca pelo último registro da tabela, conforme campo fornecido
+     * @param string $field Campo usado de referência para a listagem, padrão "created". Opção seria "id", por exemplo
+     * @return static|false
+     */
+    static function last($field = "created"){
+        $l = new static();
+        $q = new Query();
+        $q->select()->from($l->_table)->orderBy($field, "DESC")->limit(1);
+        $r = $l->fetch($q);
+        if(!empty($r) && is_array($r))
+            return $r[0];
+        return $r;
+    }
+
+    /**
      * Busca por todos os registros que satisfaçam as condições fornecidas em $params
      *
      * Para mais detalhes sobre a estrutura de $params, cheque a função Query.where()
      * @param array $params Condições para a busca
-     * @return false|array FALSE caso nada seja encontrado, senão retorna a listagem da busca
+     * @return false|static[] FALSE caso nada seja encontrado, senão retorna a listagem da busca
      */
     static function where($params){
         $w = new static();
@@ -276,7 +304,7 @@ abstract class Model{
      * @param array $param Condições para a busca
      * @param string $orderField Coluna que servirá de índice para ordenar o retorno
      * @param bool $desc Direção da ordenação: Ascendente caso FALSE, Descendente caso TRUE
-     * @return array|false False caso nada seja encontrado, senão retorna a listagem da busca ordenada
+     * @return static[]|false False caso nada seja encontrado, senão retorna a listagem da busca ordenada
      */
     static function whereOrderBy(array $param, string $orderField, bool $desc = false){
         $w = new static();

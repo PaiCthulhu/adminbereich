@@ -14,6 +14,10 @@ namespace AdmBereich;
  */
 class Router{
     /**
+     * @var string $url Current requested URL
+     */
+    static public $url;
+    /**
      * @var array $routes Lista das rotas adicionadas manualmente
      */
     protected $routes;
@@ -41,6 +45,7 @@ class Router{
      * @throws \Exception
      */
     function route($url){
+        self::$url = $url;
         $main = false;
         $namespace = $this->getNamespace().'Controllers\\';
 
