@@ -100,7 +100,7 @@ abstract class CRUDController extends Controller {
     function save(){
         $this->authCheck('add');
         if(!isset($this->_model))
-            $this->errorHandler("Model não setado");
+            $this->errorHandler("Nenhum Model definido");
         if(isset($_POST['_save'])){
             $opt = $_POST;
             unset($opt['_save']);
@@ -112,7 +112,7 @@ abstract class CRUDController extends Controller {
             }
             else{
                 dump($_POST);
-                $this->errorHandler("(".$retorno[0].") ".$retorno[2]);
+                $this->errorHandler("(".$retorno[0].") ".$retorno[1]);
             }
         }
         else{
@@ -130,25 +130,25 @@ abstract class CRUDController extends Controller {
     function update(){
         $this->authCheck('edit');
         if(!isset($this->_model))
-            $this->errorHandler("Model não setado");
+            $this->errorHandler("Nenhum Model definido");
 
         $pk = $this->_model->pk();
         if(!isset($_POST[$pk]))
-            $this->errorHandler("Id não setado (`{$pk}`)");
+            $this->errorHandler("Id não definido (`{$pk}`)");
 
         if(isset($_POST['_edit'])){
             $opt = $_POST;
             $id = $opt[$pk];
             unset($opt['_edit'], $opt[$pk]);
             $retorno = $this->_model->update($id, $opt);
-            if(is_a($retorno, 'PDOStatement')){
+            if($retorno === true){
                 if($this->_redirect)
                     Router::redirect($this->getPath());
                 return true;
             }
             else{
                 dump($_POST);
-                $this->errorHandler("(".$retorno[0].") ".$retorno[2]);
+                $this->errorHandler("(".$retorno[0].") ".$retorno[1]);
             }
         }
         else{
@@ -166,17 +166,19 @@ abstract class CRUDController extends Controller {
      */
     function delete($id){
         $this->authCheck('delete');
-        if(!isset($this->_model))
-            die($this->errorHandler("Model não setado"));
+        if(!isset($this->_model)){
+            $this->errorHandler("Nenhum Model definido");
+            die();
+        }
 
         $retorno = $this->_model::destroy($id);
-        if($retorno == true){
+        if($retorno === true){
             if($this->_redirect)
                 Router::redirect($this->getPath());
             return true;
         }
         else
-            $this->errorHandler("(".$retorno[0].") ".$retorno[2]);
+            $this->errorHandler("(".$retorno[0].") ".$retorno[1]);
         return false;
     }
 

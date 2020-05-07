@@ -49,15 +49,21 @@ class Router{
         $main = false;
         $namespace = $this->getNamespace().'Controllers\\';
 
-        if(isset($this->routes[trim($url, '/')]))
-            @list($class, $method) = @explode('/', $this->routes[trim($url, '/')]);
+        $route = \parse_url($url);
+        if(!isset($route['path']) || empty($route['path']))
+            $class = MAIN_CLASS;
         else{
-            $route = explode('/', $url, 4);
-            if(isset($this->extraNamespaces[$route[0]])){
-                $namespace = $this->extraNamespaces[$route[0]];
-                array_shift($route);
+            $path = $route['path'];
+            if(isset($this->routes[trim($path, '/')]))
+                $path = preg_split('@/@', $this->routes[trim($path, '/')], -1, PREG_SPLIT_NO_EMPTY);
+            else{
+                $path = preg_split('@/@', $path, -1, PREG_SPLIT_NO_EMPTY);
+                if(isset($this->extraNamespaces[$path[0]])){
+                    $namespace = $this->extraNamespaces[$path[0]];
+                    array_shift($path);
+                }
             }
-            @list($class, $method, $params) = $route;
+            @list($class, $method, $params) = $path;
         }
 
         if(class_exists($namespace.ucfirst($class)))

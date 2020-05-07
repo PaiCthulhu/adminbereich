@@ -232,26 +232,26 @@ class DB {
      * @param string $table Nome da tabela
      * @param array $params Array de dados a serem atualizados, onde a chave deve ser o nome do campo
      * @param array|int $id Id ou array de ids
-     * @return array|bool Retorna TRUE caso a inserção suceda, caso contrário, retorna o array com código e mensagem do erro
+     * @return array|true Retorna TRUE caso a atualização suceda, caso contrário, retorna o array com código e mensagem do erro
      */
     function update($table, $params, $id){
         $q = new Query();
         if(!is_array($id))
             $id = [sprintf(DB_PK_FORMAT, $table), $id];
-        return $this->query($q->update($table)->set($params)->where($id));
+        return $this->run($q->update($table)->set($params)->where($id));
     }
 
     /**
      * Deleta um registro da tabela
      * @param string $table Nome da tabela
      * @param array $params Array de parâmetros para a exclusão, baseado na Query::where
-     * @return array|\PDOStatement
+     * @return array|true Retorna TRUE caso a exclusão suceda, caso contrário, retorna o array com código e mensagem do erro
      */
     function delete($table, $params){
         $q = new Query();
         if(!is_array($params) || empty($params))
-            return [-1,-1,"Parâmetros Inválidos"];
-        return $this->query($q->delete($table)->where($params));
+            return [-1,"Parâmetros Inválidos"];
+        return $this->run($q->delete($table)->where($params));
     }
 
     /**
@@ -265,7 +265,7 @@ class DB {
             return $this->handle->errorInfo();
         $r = $q->execute();
         if($r === false)
-            return [-1, $q->errorCode(), 'Erro ao executar query: '.$q->errorInfo()[2]."<br/>\r\n Query: ".$query];
+            return [$q->errorCode(), 'Erro ao executar query: '.$q->errorInfo()[2]."<br/>\r\n Query: ".$query];
         return $r;
     }
 
@@ -325,5 +325,20 @@ class DB {
      */
     static function keyValSplit($array){
         return [array_keys($array), array_values($array)];
+    }
+
+    static function beginTransaction(){
+        $db = DB::connection()->handle;
+        $db->beginTransaction();
+    }
+
+    static function commit(){
+        $db = DB::connection()->handle;
+        $db->commit();
+    }
+
+    static function rollback(){
+        $db = DB::connection()->handle;
+        $db->rollBack();
     }
 }

@@ -220,7 +220,7 @@ abstract class Model{
      */
     function delete(){
         if(!isset($this->{$this->_pk}))
-            throw new \Exception("Id da instância atual não está definido");
+            throw new \Exception("Id do objeto atual não está definido");
         else
             $id = $this->{$this->_pk};
         return $this->db->delete($this->_table, [$this->_pk=>$id]);

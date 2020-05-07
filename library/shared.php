@@ -17,6 +17,8 @@ Kint\Renderer\RichRenderer::$folder = false;
  * Caso esteja em produção, ao invés de exibir, grava o erro em um arquivo error.log
  */
 function setReporting(){
+    $tmpFolder = ROOT."/tmp/";
+    is_dir($tmpFolder) or mkdir($tmpFolder, 0777);
     if($_ENV['APP_DEBUG'] == true){      //Modo Desenvolvimento
         error_reporting(E_ALL);
         ini_set('display_errors',"on");
@@ -25,7 +27,7 @@ function setReporting(){
         error_reporting(E_ALL);
         ini_set('display_errors',"off");
         ini_set('log_errors','On');
-        ini_set('error_log',ROOT.'/tmp/logs/error.log');
+        ini_set('error_log',$tmpFolder.'logs/error.log');
     }
 }
 
