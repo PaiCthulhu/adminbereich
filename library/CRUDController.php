@@ -133,8 +133,14 @@ abstract class CRUDController extends Controller {
             $this->errorHandler("Nenhum Model definido");
 
         $pk = $this->_model->pk();
-        if(!isset($_POST[$pk]))
-            $this->errorHandler("Id não definido (`{$pk}`)");
+        if(is_array($pk)){
+            foreach ($pk as $key)
+                if(!isset($_POST[$key]))
+                    $this->errorHandler("Campo primário (`{$key}`) não definido");
+        }
+        else
+            if(!isset($_POST[$pk]))
+                $this->errorHandler("Id não definido (`{$pk}`)");
 
         if(isset($_POST['_edit'])){
             $opt = $_POST;

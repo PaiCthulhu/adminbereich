@@ -94,17 +94,25 @@ abstract class Model{
 
     /**
      * Busca por um registro a partir de seu Id
-     * @param int $id Id do registro
+     * @param array|int $id Id do registro
      * @param bool $fetch_class Quando a booleana está ativa, os registro são retornados como instâncias do modelo, ao
      * invés de objetos genéricos
      * @return bool|\stdClass|static FALSE caso o registro não seja encontrado, senão retorna ou um objeto
      * genérico (\stdClass) ou uma instância do modelo, conforme o parâmentro fetch_class
      */
     function get($id, $fetch_class = true){
-        if($fetch_class)
-            return $this->db->selectSingle($this->_table, $id, \PDO::FETCH_CLASS, static::class);
-        else
-            return $this->db->selectSingle($this->_table, $id);
+        if(is_array($this->_pk)){
+            if($fetch_class)
+                return $this->db->selectSingleByFields($this->_table, $id, \PDO::FETCH_CLASS, static::class);
+            else
+                return $this->db->selectSingleByFields($this->_table, $id);
+        }
+        else{
+            if($fetch_class)
+                return $this->db->selectSingle($this->_table, $id, \PDO::FETCH_CLASS, static::class);
+            else
+                return $this->db->selectSingle($this->_table, $id);
+        }
     }
 
     /**
@@ -166,12 +174,14 @@ abstract class Model{
 
     /**
      * Atualiza um registro na tabela do modelo, a partir de um id
-     * @param int $id Id do registro a ser alterado
+     * @param int|array $id Id(s) do registro a ser alterado
      * @param array $params Array de dados a serem inseridos, onde a chave deve ser o nome do campo
      * @return array|true Retorna TRUE caso suceda, do contrário, um array com o erro
      */
     function update($id, $params){
-        return $this->db->update($this->_table, $params, [$this->_pk=>$id]);
+        if(!is_array($id))
+            $id = [$this->_pk=>$id];
+        return $this->db->update($this->_table, $params, $id);
     }
 
     /**
@@ -185,6 +195,19 @@ abstract class Model{
         foreach ($this->_columns as $column)
             if(isset($this->{$column->name}))
                 $opt[$column->name] = $this->columnCheck($column, $this->{$column->name});
+        if(is_array($this->_pk)){
+            $ids = [];
+            foreach ($this->_pk as $key){
+                if(isset($opt[$key]) && !empty($opt[$key]))
+                    $ids[$key] = $opt[$key];
+                unset($opt[$key]);
+            }
+            if(empty($ids))
+                $r = $this->db->insert($this->_table, $opt);
+            else
+                $r = $this->update($ids, $opt);
+        }
+        else
         if(isset($opt[$this->_pk]) && !empty($opt[$this->_pk])){
             $id = $opt[$this->_pk];
             unset($opt[$this->_pk]);
@@ -219,11 +242,20 @@ abstract class Model{
      * @throws \Exception caso não exista um id
      */
     function delete(){
-        if(!isset($this->{$this->_pk}))
-            throw new \Exception("Id do objeto atual não está definido");
-        else
-            $id = $this->{$this->_pk};
-        return $this->db->delete($this->_table, [$this->_pk=>$id]);
+        if(is_array($this->_pk)) {
+            $param = [];
+            foreach ($this->_pk as $key){
+                if(!isset($this->{$key}))
+                    throw new \Exception("Chave \"{$key}\" do objeto atual não está definido");
+                $param[$key] = $this->{$key};
+            }
+        }
+        else {
+            if(!isset($this->{$this->_pk}))
+                throw new \Exception("Id do objeto atual não está definido");
+                $param = [$this->_pk=>$this->{$this->_pk}];
+        }
+        return $this->db->delete($this->_table, $param);
     }
 
     /**
@@ -238,13 +270,16 @@ abstract class Model{
 
     /**
      * Retorna uma instância do modelo preenchida com os valores do registro de id $id
-     * @param int $id Id do registro a ser buscado
+     * @param array|int $id Id do registro a ser buscado
      * @return static|false FALSE caso o registro não seja encontrado, caso contrário, a instância do modelo com os
      * atributos preenchidos
      */
     static function find($id){
         $n = new static();
-        return $n->db->selectSingle($n->_table, $id, \PDO::FETCH_CLASS, static::class);
+        if(is_array($n->_pk))
+            return $n->db->selectSingleByFields($n->_table, $id, \PDO::FETCH_CLASS, static::class);
+        else
+            return $n->db->selectSingle($n->_table, $id, \PDO::FETCH_CLASS, static::class);
     }
 
     /**
