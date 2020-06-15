@@ -177,7 +177,23 @@ abstract class CRUDController extends Controller {
             die();
         }
 
-        $retorno = $this->_model::destroy($id);
+        $match = [];
+        if(preg_match("/(\d*)-(\d*)/", $id, $match) === 1){
+            unset($match[0]);
+            if(count($match) <= 0){
+                dump($match);
+                $this->errorHandler("Erro na chave composta, chave: \"{$id}\".");
+                die();
+            }
+            elseif (count($match) == 1)
+                $retorno = $this->_model::destroy($match);
+            else {
+                $d = $this->_model::find($match);
+                $retorno = $d->delete();
+            }
+        }
+        else
+            $retorno = $this->_model::destroy($id);
         if($retorno === true){
             if($this->_redirect)
                 Router::redirect($this->getPath());
